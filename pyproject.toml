@@ -21,6 +21,8 @@ dependencies = [
     "click>=8.1.8",
     "tomlkit>=0.13.2",
     "packaging>=24.2",
+    "build>=1.0.0",
+    "twine>=6.1.0"
 ]
 license = "Apache-2.0"
 license-files = [
@@ -33,9 +35,6 @@ keywords = [
 
 [project.scripts]
 psycho = "psycho:cli"
-
-[tool.psycho.scripts]
-test = ["pytest", "tests" ]
 
 [project.urls]
 Homepage = "https://rob-blackbourn.github.io/psycho"

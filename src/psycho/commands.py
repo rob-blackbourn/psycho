@@ -5,7 +5,9 @@ from pathlib import Path
 import click
 from click import Context
 
+from .building import build_project
 from .dependencies import add_packages, remove_packages
+from .publishing import publish_project
 
 
 @click.group()
@@ -40,3 +42,17 @@ def remove(ctx: Context, packages: tuple[str, ...]):
     click.echo(f"Removing {packages}")
     project_file: Path = ctx.obj["PROJECT_FILE"]
     remove_packages(project_file, packages)
+
+
+@cli.command()
+def build() -> None:
+    """Build the project."""
+    click.echo(f"Building")
+    build_project()
+
+
+@cli.command()
+def publish() -> None:
+    """Build the project."""
+    click.echo("Publishing")
+    publish_project()
