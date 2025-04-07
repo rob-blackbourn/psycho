@@ -12,6 +12,9 @@ def _upload(
     ])
 
 
-def publish_project() -> None:
+def publish_project(repository: str | None) -> None:
     """Build the project."""
-    _upload()
+    args: list[str] = []
+    if repository is not None:
+        args.append(f"-r {repository}")
+    _upload(*args)
