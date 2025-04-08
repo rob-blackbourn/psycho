@@ -25,7 +25,7 @@ def cli(ctx: Context, project_file: str) -> None:
     ctx.obj["PROJECT_FILE"] = project_file
 
 
-@cli.command()
+@cli.command(help="Add a package to the project.")
 @click.argument("packages", nargs=-1)
 @click.pass_context
 def add(ctx: Context, packages: tuple[str, ...]) -> None:
@@ -35,7 +35,7 @@ def add(ctx: Context, packages: tuple[str, ...]) -> None:
     add_packages(project_file, packages)
 
 
-@cli.command()
+@cli.command(help="Remove a package from the project.")
 @click.argument("packages", nargs=-1)
 @click.pass_context
 def remove(ctx: Context, packages: tuple[str, ...]):
@@ -45,7 +45,7 @@ def remove(ctx: Context, packages: tuple[str, ...]):
     remove_packages(project_file, packages)
 
 
-@cli.command()
+@cli.command(help="Build the project.")
 @click.option(
     '-V', '--version',
     is_flag=True,
@@ -130,17 +130,137 @@ def build(
     )
 
 
-@cli.command()
+@cli.command(help="Publish the project.")
 @click.option(
     "-r",
-    "repository",
+    "--repository",
     default=None,
-    type=str
+    type=str,
+    help="The repository (package index) to upload the package to. Should be a section in the config file [default: pypi]. (Can also be set via TWINE_REPOSITORY environment variable.)"
 )
-def publish(repository: str | None) -> None:
+@click.option(
+    "--repository-url",
+    default=None,
+    type=str,
+    help="The repository (package index) URL to upload the package to. This overrides --repository. (Can also be set via TWINE_REPOSITORY_URL environment variable.)"
+)
+@click.option(
+    '--attestations',
+    is_flag=True,
+    default=None,
+    help="Upload each file's associated attestations."
+)
+@click.option(
+    '-s',
+    '--sign',
+    is_flag=True,
+    default=None,
+    help="Sign files to upload using GPG."
+)
+@click.option(
+    "--sign-with",
+    default=None,
+    type=str,
+    help="GPG program used to sign uploads [default: gpg]."
+)
+@click.option(
+    "-i",
+    "--identity",
+    default=None,
+    type=str,
+    help="GPG identity used to sign files."
+)
+@click.option(
+    "-u",
+    "--username",
+    default=None,
+    type=str,
+    help="The username to authenticate to the repository (package index) as. Has no effect on PyPI or TestPyPI. (Can also be set via TWINE_USERNAME environment variable.)"
+)
+@click.option(
+    "-p",
+    "--password",
+    default=None,
+    type=str,
+    help="The password to authenticate to the repository (package index) with. (Can also be set via TWINE_PASSWORD environment variable.)"
+)
+@click.option(
+    '--non-interactive',
+    is_flag=True,
+    default=None,
+    help="Do not interactively prompt for username/password if the required credentials are missing. (Can also be set via TWINE_NON_INTERACTIVE environment variable.)"
+)
+@click.option(
+    "-c",
+    "--comment",
+    default=None,
+    type=str,
+    help="The comment to include with the distribution file."
+)
+@click.option(
+    '--skip-existing',
+    is_flag=True,
+    default=None,
+    help="Do not interactively prompt for username/password if the required credentials are missing. (Can also be set via TWINE_NON_INTERACTIVE environment variable.)"
+)
+@click.option(
+    "--cert",
+    type=click.Path(exists=True),
+    help="Path to alternate CA bundle (can also be set via TWINE_CERT environment variable).",
+)
+@click.option(
+    "--client-cert",
+    type=click.Path(exists=True),
+    help="Path to SSL client certificate, a single file containing the private key and the certificate in PEM format.",
+)
+@click.option(
+    '--verbose',
+    is_flag=True,
+    default=None,
+    help="Show verbose output."
+)
+@click.option(
+    '--disable-progress-bar',
+    is_flag=True,
+    default=None,
+    help="Disable the progress bar."
+)
+def publish(
+        repository: str | None,
+        repository_url: str | None,
+        attestations: bool | None,
+        sign: bool | None,
+        sign_with: str | None,
+        identity: str | None,
+        username: str | None,
+        password: str | None,
+        non_interactive: bool | None,
+        comment: str | None,
+        skip_existing: bool | None,
+        cert: str | None,
+        client_cert: str | None,
+        verbose: bool | None,
+        disable_progress_bar: bool | None,
+) -> None:
     """Build the project."""
     click.echo("Publishing")
-    publish_project(repository)
+    publish_project(
+        repository,
+        repository_url,
+        attestations,
+        sign,
+        sign_with,
+        identity,
+        username,
+        password,
+        non_interactive,
+        comment,
+        skip_existing,
+        cert,
+        client_cert,
+        verbose,
+        disable_progress_bar,
+    )
 
 
 if __name__ == "__main__":
