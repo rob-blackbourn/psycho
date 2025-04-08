@@ -21,5 +21,6 @@ Currently the following are supported.
 psycho add pandas
 psycho remove pandas
 psycho build
+psyhco upload
 ```
 
