@@ -18,9 +18,8 @@ too many new tools. The currently support tools are:
 Currently the following are supported.
 
 ```bash
-psycho add pandas
-psycho remove pandas
+psycho add <package>
+psycho remove <package>
 psycho build
 psyhco publish
 ```
-

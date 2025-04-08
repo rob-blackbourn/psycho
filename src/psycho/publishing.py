@@ -1,3 +1,4 @@
+from glob import glob
 import subprocess
 import sys
 from typing import Literal
@@ -62,4 +63,4 @@ def publish_project(
     if disable_progress_bar:
         args.append("--disable-progress-bar")
 
-    _twine('upload', *args)
+    _twine('upload', *args, *glob("dist/*"))
