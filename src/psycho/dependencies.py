@@ -86,10 +86,22 @@ def _recreate_optional_dependency_requirements(
     optional_dependencies[group] = dependencies
 
 
-def _install_requirements(
-        requirements: list[Requirement],
-        current_requirements: dict[str, Requirement]
+def add_packages(
+        project_path: Path,
+        group: str | None,
+        packages: tuple[str, ...]
 ) -> None:
+    pyproject = read_pyproject(project_path)
+    project = ensure_project(pyproject)
+    current_requirements = _read_required_dependency_requirements(
+        project
+    ) if not group else _read_optional_dependency_requirements(
+        project,
+        group
+    )
+
+    requirements = [Requirement(pkg) for pkg in packages]
+
     for req in requirements:
         if req.name in current_requirements:
             _pip('uninstall', req, '-y')
@@ -98,106 +110,15 @@ def _install_requirements(
 
         current_requirements[req.name] = req
 
-
-def _add_required_packages(
-        project_path: Path,
-        packages: tuple[str, ...]
-) -> None:
-    pyproject = read_pyproject(project_path)
-    project = ensure_project(pyproject)
-    current_requirements = _read_required_dependency_requirements(project)
-    requirements = [Requirement(pkg) for pkg in packages]
-
-    _install_requirements(requirements, current_requirements)
-
-    _recreate_required_dependency_requirements(project, current_requirements)
-
-    write_pyproject(project_path, pyproject)
-
-
-def _add_optional_packages(
-        project_path: Path,
-        group: str,
-        packages: tuple[str, ...]
-) -> None:
-    pyproject = read_pyproject(project_path)
-    project = ensure_project(pyproject)
-    current_requirements = _read_optional_dependency_requirements(
-        project,
-        group
-    )
-    requirements = [Requirement(pkg) for pkg in packages]
-
-    _install_requirements(requirements, current_requirements)
-
-    _recreate_optional_dependency_requirements(
-        project,
-        group,
-        current_requirements
-    )
-
-    write_pyproject(project_path, pyproject)
-
-
-def add_packages(
-        project_path: Path,
-        optional: str | None,
-        packages: tuple[str, ...]
-) -> None:
-    if optional is None:
-        _add_required_packages(project_path, packages)
+    if group is None:
+        _recreate_required_dependency_requirements(
+            project, current_requirements)
     else:
-        _add_optional_packages(project_path, optional, packages)
-
-
-def _uninstall_requirements(
-        requirements: list[Requirement],
-        current_requirements: dict[str, Requirement]
-) -> None:
-    for req in requirements:
-        if req.name not in current_requirements:
-            raise KeyError(f"Dependency {req} does not exist")
-
-        _pip('uninstall', req, '-y')
-        del current_requirements[req.name]
-
-
-def _remove_required_packages(
-        project_path: Path,
-        packages: tuple[str, ...]
-) -> None:
-    pyproject = read_pyproject(project_path)
-    project = ensure_project(pyproject)
-    current_requirements = _read_required_dependency_requirements(project)
-    requirements = [Requirement(pkg) for pkg in packages]
-
-    _uninstall_requirements(requirements, current_requirements)
-
-    _recreate_required_dependency_requirements(project, current_requirements)
-
-    write_pyproject(project_path, pyproject)
-
-
-def _remove_optional_packages(
-        project_path: Path,
-        group: str,
-        packages: tuple[str, ...]
-) -> None:
-    pyproject = read_pyproject(project_path)
-    project = ensure_project(pyproject)
-    current_requirements = _read_optional_dependency_requirements(
-        project,
-        group
-    )
-    requirements = [Requirement(pkg) for pkg in packages]
-
-    _uninstall_requirements(requirements, current_requirements)
-
-    _recreate_optional_dependency_requirements(
-        project,
-        group,
-        current_requirements
-    )
+        _recreate_optional_dependency_requirements(
+            project,
+            group,
+            current_requirements
+        )
 
     write_pyproject(project_path, pyproject)
 
@@ -207,7 +128,32 @@ def remove_packages(
         group: str | None,
         packages: tuple[str, ...]
 ) -> None:
+    pyproject = read_pyproject(project_path)
+    project = ensure_project(pyproject)
+    current_requirements = _read_required_dependency_requirements(
+        project
+    ) if not group else _read_optional_dependency_requirements(
+        project,
+        group
+    )
+
+    requirements = [Requirement(pkg) for pkg in packages]
+
+    for req in requirements:
+        if req.name not in current_requirements:
+            raise KeyError(f"Dependency {req} does not exist")
+
+        _pip('uninstall', req, '-y')
+        del current_requirements[req.name]
+
     if group is None:
-        _remove_required_packages(project_path, packages)
+        _recreate_required_dependency_requirements(
+            project, current_requirements)
     else:
-        _remove_optional_packages(project_path, group, packages)
+        _recreate_optional_dependency_requirements(
+            project,
+            group,
+            current_requirements
+        )
+
+    write_pyproject(project_path, pyproject)
