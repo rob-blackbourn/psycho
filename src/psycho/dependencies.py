@@ -22,6 +22,12 @@ def _pip(
     ])
 
 
+def _pip_install_project(args: list[str]) -> None:
+    subprocess.check_call([
+        sys.executable, "-m", "pip", 'install', '--editable', '.', *args
+    ])
+
+
 def _read_required_dependency_requirements(
         project: Table
 ) -> dict[str, Requirement]:
@@ -93,9 +99,31 @@ def _recreate_optional_dependency_requirements(
 
 def add_packages(
         project_path: Path,
+        packages: tuple[str, ...],
         group: str | None,
-        packages: tuple[str, ...]
+        allow_prerelease: bool | None,
+        dry_run: bool | None,
+        upgrade: bool | None,
+        index_url: str | None,
+        extra_index_url: str | None,
 ) -> None:
+    args: list[str] = []
+    if allow_prerelease:
+        args.append('--pre')
+    if dry_run:
+        args.append('--dry-run')
+    if upgrade:
+        args.append('--upgrade')
+    if index_url:
+        args.append(f'--index-url {index_url}')
+    if extra_index_url:
+        args.append(f'--extra-index-url {extra_index_url}')
+
+    # Special case for no packages - install the project as editable.
+    if len(packages) == 0:
+        _pip_install_project(args)
+        return
+
     pyproject = read_pyproject(project_path)
     project = ensure_project(pyproject)
     current_requirements = _read_required_dependency_requirements(
@@ -111,7 +139,7 @@ def add_packages(
         if req.name in current_requirements:
             _pip('uninstall', req, '-y')
 
-        _pip('install', req)
+        _pip('install', req, *args)
 
         current_requirements[req.name] = req
 

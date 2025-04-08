@@ -26,27 +26,70 @@ def cli(ctx: Context, project_file: str) -> None:
 
 
 @cli.command(help="Add a package to the project.")
+@click.argument("packages", nargs=-1)
 @click.option(
     "--optional",
     'group',
     default=None,
     type=str,
-    help="Add the package as an optional dependency (must specify option group name)."
+    help="Add the package as an optional dependency (must specify option group name).",
 )
-@click.argument("packages", nargs=-1)
+@click.option(
+    '--pre',
+    'allow_prerelease',
+    is_flag=True,
+    default=None,
+    help="Include pre-release and development versions. By default, pip only finds stable versions.",
+)
+@click.option(
+    '--dry-run',
+    is_flag=True,
+    default=None,
+    help="Don’t actually install anything, just print what would be.",
+)
+@click.option(
+    '-U',
+    '--upgrade',
+    is_flag=True,
+    default=None,
+    help="Upgrade all specified packages to the newest available version. The handling of dependencies depends on the upgrade-strategy used.",
+)
+@click.option(
+    "-i",
+    "--index-url",
+    default=None,
+    type=str,
+    help="Base URL of the Python Package Index (default https://pypi.org/simple). This should point to a repository compliant with PEP 503 (the simple repository API) or a local directory laid out in the same format.",
+)
+@click.option(
+    "--extra-index-url",
+    default=None,
+    type=str,
+    help="Extra URLs of package indexes to use in addition to --index-url. Should follow the same rules as --index-url.",
+)
 @click.pass_context
 def add(
         ctx: Context,
-        group: str | None,
         packages: tuple[str, ...],
+        group: str | None,
+        allow_prerelease: bool | None,
+        dry_run: bool | None,
+        upgrade: bool | None,
+        index_url: str | None,
+        extra_index_url: str | None,
 ) -> None:
     """Add a package to the project."""
     click.echo(f"Adding {packages}")
     project_file: Path = ctx.obj["PROJECT_FILE"]
     add_packages(
         project_file,
+        packages,
         group,
-        packages
+        allow_prerelease,
+        dry_run,
+        upgrade,
+        index_url,
+        extra_index_url,
     )
 
 
