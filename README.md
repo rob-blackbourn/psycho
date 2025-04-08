@@ -41,7 +41,7 @@ psycho install
 ```
 
 When used with a package requirement, the requirement is written to the `pyproject.toml`
-and the package is install into the python environment using `pip`.
+and the package is installed into the python environment using `pip`.
 
 ```bash
 psycho install "pandas>=1.5.3"

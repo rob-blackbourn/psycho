@@ -1,6 +1,6 @@
 [project]
 name = "psycho"
-version = "1.0.0-alpha.2"
+version = "1.0.0-alpha.3"
 description = "A tool to manage python projects and their dependencies."
 authors = [
     { name = "Rob Blackbourn", email = "rob.blackbourn@gmail.com" }
@@ -37,7 +37,6 @@ keywords = [
 psycho = "psycho:cli"
 
 [project.urls]
-Homepage = "https://rob-blackbourn.github.io/psycho"
 Repository = "https://github.com/rob-blackbourn/psycho"
 Issues = "https://github.com/rob-blackbourn/psycho/issues"
 
