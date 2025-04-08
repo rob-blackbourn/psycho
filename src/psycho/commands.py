@@ -26,23 +26,53 @@ def cli(ctx: Context, project_file: str) -> None:
 
 
 @cli.command(help="Add a package to the project.")
+@click.option(
+    "--optional",
+    'group',
+    default=None,
+    type=str,
+    help="Add the package as an optional dependency (must specify option group name)."
+)
 @click.argument("packages", nargs=-1)
 @click.pass_context
-def add(ctx: Context, packages: tuple[str, ...]) -> None:
+def add(
+        ctx: Context,
+        group: str | None,
+        packages: tuple[str, ...],
+) -> None:
     """Add a package to the project."""
     click.echo(f"Adding {packages}")
     project_file: Path = ctx.obj["PROJECT_FILE"]
-    add_packages(project_file, packages)
+    add_packages(
+        project_file,
+        group,
+        packages
+    )
 
 
 @cli.command(help="Remove a package from the project.")
+@click.option(
+    "--optional",
+    'group',
+    default=None,
+    type=str,
+    help="Add the package as an optional dependency (must specify option group name)."
+)
 @click.argument("packages", nargs=-1)
 @click.pass_context
-def remove(ctx: Context, packages: tuple[str, ...]):
+def remove(
+        ctx: Context,
+        group: str | None,
+        packages: tuple[str, ...]
+) -> None:
     """Remove a package from the project."""
     click.echo(f"Removing {packages}")
     project_file: Path = ctx.obj["PROJECT_FILE"]
-    remove_packages(project_file, packages)
+    remove_packages(
+        project_file,
+        group,
+        packages
+    )
 
 
 @cli.command(help="Build the project.")
