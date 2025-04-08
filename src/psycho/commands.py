@@ -25,7 +25,7 @@ def cli(ctx: Context, project_file: str) -> None:
     ctx.obj["PROJECT_FILE"] = project_file
 
 
-@cli.command(help="Add a package to the project.")
+@cli.command(help="Install a package.")
 @click.argument("packages", nargs=-1)
 @click.option(
     "--optional",
@@ -68,7 +68,7 @@ def cli(ctx: Context, project_file: str) -> None:
     help="Extra URLs of package indexes to use in addition to --index-url. Should follow the same rules as --index-url.",
 )
 @click.pass_context
-def add(
+def install(
         ctx: Context,
         packages: tuple[str, ...],
         group: str | None,
@@ -93,7 +93,7 @@ def add(
     )
 
 
-@cli.command(help="Remove a package from the project.")
+@cli.command(help="Uninstall a package.")
 @click.option(
     "--optional",
     'group',
@@ -103,7 +103,7 @@ def add(
 )
 @click.argument("packages", nargs=-1)
 @click.pass_context
-def remove(
+def uninstall(
         ctx: Context,
         group: str | None,
         packages: tuple[str, ...]
