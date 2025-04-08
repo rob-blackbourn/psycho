@@ -83,7 +83,12 @@ def _recreate_optional_dependency_requirements(
     for req in requirements.values():
         dependencies.add_line(str(req))
     optional_dependencies = cast(Table, project['optional-dependencies'])
-    optional_dependencies[group] = dependencies
+    if len(dependencies) > 0:
+        optional_dependencies[group] = dependencies
+    else:
+        del optional_dependencies[group]
+        if len(optional_dependencies) == 0:
+            del project['optional-dependencies']
 
 
 def add_packages(
@@ -112,7 +117,9 @@ def add_packages(
 
     if group is None:
         _recreate_required_dependency_requirements(
-            project, current_requirements)
+            project,
+            current_requirements
+        )
     else:
         _recreate_optional_dependency_requirements(
             project,
