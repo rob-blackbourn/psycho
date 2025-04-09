@@ -8,6 +8,7 @@ from click import Context
 from psycho.building import build_project
 from psycho.click_types import NAME_EQ_VALUE
 from psycho.dependencies import add_packages, remove_packages
+from psycho.initializing import initialize
 from psycho.publishing import publish_project
 
 
@@ -16,13 +17,15 @@ from psycho.publishing import publish_project
     "--project-file",
     default="pyproject.toml",
     help="The path to the project file.",
-    type=click.Path(exists=True)
+    type=click.Path()
 )
 @click.pass_context
 def cli(ctx: Context, project_file: str) -> None:
-    """The route command."""
+    """Utilities for manageging pyproject.toml with pip, build and twine."""
+
     ctx.ensure_object(dict)
-    ctx.obj["PROJECT_FILE"] = project_file
+
+    ctx.obj["PROJECT_FILE"] = Path(project_file)
 
 
 @cli.command(help="Install a package.")
@@ -333,6 +336,65 @@ def publish(
         client_cert,
         verbose,
         disable_progress_bar,
+    )
+
+
+@cli.command(help="Initialise a package.")
+@click.option(
+    "--name",
+    type=str,
+    required=True,
+    prompt=True,
+    help="Name"
+)
+@click.option(
+    "--version",
+    type=str,
+    default="0.1.0",
+    required=True,
+    prompt=True,
+    help="Version"
+)
+@click.option(
+    "--description",
+    type=str,
+    default=None,
+    prompt=True,
+    help="Description"
+)
+@click.option(
+    "--author",
+    type=str,
+    default=None,
+    prompt=True,
+    help="Author"
+)
+@click.option(
+    "--email",
+    type=str,
+    default=None,
+    prompt=True,
+    help="Author"
+)
+@click.pass_context
+def init(
+        ctx: Context,
+        name: str,
+        version: str,
+        description: str | None,
+        author: str | None,
+        email: str | None,
+) -> None:
+    """Remove a package from the project."""
+    click.echo(f"Initializing {name}")
+    project_file: Path = ctx.obj["PROJECT_FILE"]
+    initialize(
+        project_file,
+        name,
+        version,
+        description,
+        author,
+        email,
     )
 
 
