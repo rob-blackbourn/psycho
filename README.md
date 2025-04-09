@@ -26,10 +26,19 @@ in support for automating project management with the standard tools:
 
 The following are supported.
 
+* init
 * install
 * uninstall
 * build
 * publish
+
+### init
+
+Makes a new `pyproject.toml`. The command prompts for input.
+
+```bash
+psycho init
+```
 
 ### install
 
