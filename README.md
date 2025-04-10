@@ -6,7 +6,8 @@ Python project management automation using standard build tools.
 
 This project is a working prototype.
 
-It can be installed from pypi:
+It can be installed from pypi. Its probably best to install as a user
+dependency, or in a virtual environment.
 
 ```bash
 pip install psycho
@@ -37,7 +38,19 @@ The following are supported.
 Makes a new `pyproject.toml`. The command prompts for input.
 
 ```bash
-psycho init
+$ psycho init
+Name: my-package
+Version [0.1.0]: 
+Description: My package
+Author: rob
+Email: rob@example.com
+Initializing my-package
+```
+
+Alternatively values can be provided as arguments.
+
+```bash
+$ psycho init --name my-package --version 0.1.0 --description "My package" --author "Rob Blackbourb" --email "rob@example.com"
 ```
 
 ### install
@@ -45,22 +58,25 @@ psycho init
 When used without specifying packages this command installs the project as editable.
 
 ```bash
-# equivalent to: pip install --editable .
-psycho install
+$ psycho install
 ```
+
+This is the equivalent of `pip install --editable .`.
 
 When used with a package requirement, the requirement is written to the `pyproject.toml`
 and the package is installed into the python environment using `pip`.
 
 ```bash
-psycho install "pandas>=1.5.3"
+$ psycho install "pandas>=1.5.3"
 ```
 
 The `-optional` flag can be used (with a group name) to add an optional dependency.
 
 ```bash
-psycho install --optional dev pytest
+$ psycho install --optional dev pytest
 ```
+
+Most the flags used by pip are available to this command.
 
 ### uninstall
 
@@ -68,14 +84,14 @@ This command removes a package from the `pyproject.toml` file, and uninstalls
 it using `pip`.
 
 ```bash
-psycho uninstall pandas
+$ psycho uninstall pandas
 ```
 
 This can be used with the optional flag (with a group name) to uninstall an optional
 dependency.
 
 ```bash
-psycho install --optional dev pytest
+$ psycho install --optional dev pytest
 ```
 
 ### build
@@ -83,15 +99,17 @@ psycho install --optional dev pytest
 The build command will build a package, prior to publishing it.
 
 ```bash
-# The equivalent of: python -m build
-psycho build
+$ psycho build
 ```
+
+This is the equivalent of `python -m build`.
 
 ### publish
 
 The publish command will upload a package with twine.
 
 ```bash
-# The equivalent of: twine upload dist/*
-psycho publish
+$ psycho publish
 ```
+
+This is the equivalent of `twine upload dist/*`.
