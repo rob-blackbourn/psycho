@@ -1,8 +1,7 @@
 import tempfile
 from glob import glob
-import subprocess
-import sys
-from typing import Dict, List, Literal, Optional
+from pathlib import Path
+from typing import Dict, Optional
 
 from .building import build_project
 from .uploading import upload_project

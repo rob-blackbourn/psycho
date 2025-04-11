@@ -34,34 +34,34 @@ def upload_project(
     """Build the project."""
     args: List[str] = []
     if repository is not None:
-        args.append(f"--repository {repository}")
+        args += ["--repository", repository]
     if repository_url is not None:
-        args.append(f"--repository-url {repository_url}")
+        args += ["--repository-url", repository_url]
     if attestations:
-        args.append("--attestations")
+        args += ["--attestations"]
     if sign:
-        args.append("--sign")
+        args += ["--sign"]
     if sign_with is not None:
-        args.append(f"--sign-with {sign_with}")
+        args += ["--sign-with", sign_with]
     if identity is not None:
-        args.append(f"--identity {identity}")
+        args += ["--identity", identity]
     if username is not None:
-        args.append(f"--username {username}")
+        args += ["--username", username]
     if password is not None:
-        args.append(f"--password {password}")
+        args += ["--password", password]
     if non_interactive:
-        args.append("--non-interactive")
+        args += ["--non-interactive"]
     if comment is not None:
-        args.append(f"--comment {comment}")
+        args += ["--comment", comment]
     if skip_existing:
-        args.append("--skip-existing")
+        args += ["--skip-existing"]
     if cert is not None:
-        args.append(f"--cert {cert}")
+        args += ["--cert", cert]
     if client_cert is not None:
-        args.append(f"--client-cert {client_cert}")
+        args += ["--client-cert", client_cert]
     if verbose:
-        args.append("--verbose")
+        args += ["--verbose"]
     if disable_progress_bar:
-        args.append("--disable-progress-bar")
+        args += ["--disable-progress-bar"]
 
     _twine('upload', *args, *files)

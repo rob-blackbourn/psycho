@@ -109,15 +109,15 @@ def add_packages(
 ) -> None:
     args: List[str] = []
     if allow_prerelease:
-        args.append('--pre')
+        args += ['--pre']
     if dry_run:
-        args.append('--dry-run')
+        args += ['--dry-run']
     if upgrade:
-        args.append('--upgrade')
+        args += ['--upgrade']
     if index_url:
-        args.append(f'--index-url {index_url}')
+        args += ['--index-url', index_url]
     if extra_index_url:
-        args.append(f'--extra-index-url {extra_index_url}')
+        args += ['--extra-index-url', extra_index_url]
 
     # Special case for no packages - install the project as editable.
     if len(packages) == 0:

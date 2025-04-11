@@ -20,31 +20,31 @@ def build_project(
         skip_dependency_check: Optional[bool],
         no_isolation: Optional[bool],
         config_settings: Dict[str, str],
-        outdir: Optional[Path],
+        outdir: Optional[str],
         installer: Optional[str]
 ) -> None:
     """Build the project."""
     args: list[str] = []
     if version:
-        args.append("--version")
+        args += ["--version"]
     if verbose:
-        args.append("--verbose")
+        args += ["--verbose"]
     if sdist:
-        args.append("--sdist")
+        args += ["--sdist"]
     if wheel:
-        args.append("--wheel")
+        args += ["--wheel"]
     if skip_dependency_check:
-        args.append("--skip-dependency-check")
+        args += ["--skip-dependency-check"]
     if no_isolation:
-        args.append("--no-isolation")
+        args += ["--no-isolation"]
     for name, value in config_settings.items():
         if value is not None:
-            args.append(f"--config-setting {name}={value}")
+            args += ["--config-setting", f"{name}={value}"]
         else:
-            args.append(f"--config-setting {name}")
+            args += ["--config-setting", name]
     if outdir is not None:
-        args.append(f"--outdir {outdir}")
+        args += ["--outdir", outdir]
     if installer is not None:
-        args.append(f"--installer {installer}")
+        args += ["--installer", installer]
 
     _build(*args)

@@ -203,7 +203,7 @@ def build(
         skip_dependency_check,
         no_isolation,
         config_vars,
-        Path(outdir) if outdir else None,
+        outdir,
         installer
     )
 
