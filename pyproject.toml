@@ -1,11 +1,11 @@
 [project]
 name = "psycho"
-version = "1.0.0-alpha.4"
+version = "1.0.0-alpha.5"
 description = "A tool to manage python projects and their dependencies."
 authors = [
     { name = "Rob Blackbourn", email = "rob.blackbourn@gmail.com" }
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Environment :: Console",
@@ -24,10 +24,7 @@ dependencies = [
     "build>=1.0.0",
     "twine>=6.1.0"
 ]
-license = "Apache-2.0"
-license-files = [
-    "LICENSE"
-]
+license = { text = "Apache-2.0" }
 keywords = [
     "pyproject.toml",
     "pip"

@@ -3,7 +3,7 @@
 from pathlib import Path
 import subprocess
 import sys
-from typing import cast, Literal
+from typing import cast, Dict, List, Literal, Optional, Sequence
 
 from packaging.requirements import Requirement
 from tomlkit import table, array
@@ -22,7 +22,7 @@ def _pip(
     ])
 
 
-def _pip_install_project(args: list[str]) -> None:
+def _pip_install_project(args: List[str]) -> None:
     subprocess.check_call([
         sys.executable, "-m", "pip", 'install', '--editable', '.', *args
     ])
@@ -30,7 +30,7 @@ def _pip_install_project(args: list[str]) -> None:
 
 def _read_required_dependency_requirements(
         project: Table
-) -> dict[str, Requirement]:
+) -> Dict[str, Requirement]:
     if 'dependencies' not in project:
         project['dependencies'] = array()
     dependencies = project["dependencies"]
@@ -48,7 +48,7 @@ def _read_required_dependency_requirements(
 
 def _recreate_required_dependency_requirements(
         project: Table,
-        requirements: dict[str, Requirement]
+        requirements: Dict[str, Requirement]
 ) -> None:
     dependencies = array()
     for req in requirements.values():
@@ -59,7 +59,7 @@ def _recreate_required_dependency_requirements(
 def _read_optional_dependency_requirements(
         project: Table,
         group: str
-) -> dict[str, Requirement]:
+) -> Dict[str, Requirement]:
     if 'optional-dependencies' not in project:
         project['optional-dependencies'] = table()
     optional_dependencies = project["optional-dependencies"]
@@ -83,7 +83,7 @@ def _read_optional_dependency_requirements(
 def _recreate_optional_dependency_requirements(
         project: Table,
         group: str,
-        requirements: dict[str, Requirement]
+        requirements: Dict[str, Requirement]
 ) -> None:
     dependencies = array()
     for req in requirements.values():
@@ -99,15 +99,15 @@ def _recreate_optional_dependency_requirements(
 
 def add_packages(
         project_path: Path,
-        packages: tuple[str, ...],
-        group: str | None,
-        allow_prerelease: bool | None,
-        dry_run: bool | None,
-        upgrade: bool | None,
-        index_url: str | None,
-        extra_index_url: str | None,
+        packages: Sequence[str],
+        group: Optional[str],
+        allow_prerelease: Optional[bool],
+        dry_run: Optional[bool],
+        upgrade: Optional[bool],
+        index_url: Optional[str],
+        extra_index_url: Optional[str],
 ) -> None:
-    args: list[str] = []
+    args: List[str] = []
     if allow_prerelease:
         args.append('--pre')
     if dry_run:
@@ -160,8 +160,8 @@ def add_packages(
 
 def remove_packages(
         project_path: Path,
-        group: str | None,
-        packages: tuple[str, ...]
+        group: Optional[str],
+        packages: Sequence[str]
 ) -> None:
     pyproject = read_pyproject(project_path)
     project = ensure_project(pyproject)

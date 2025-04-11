@@ -1,6 +1,7 @@
 """Commands for the Psycho CLI."""
 
 from pathlib import Path
+from typing import Optional, Sequence, Tuple
 
 import click
 from click import Context
@@ -73,13 +74,13 @@ def cli(ctx: Context, project_file: str) -> None:
 @click.pass_context
 def install(
         ctx: Context,
-        packages: tuple[str, ...],
-        group: str | None,
-        allow_prerelease: bool | None,
-        dry_run: bool | None,
-        upgrade: bool | None,
-        index_url: str | None,
-        extra_index_url: str | None,
+        packages: Sequence[str],
+        group: Optional[str],
+        allow_prerelease: Optional[bool],
+        dry_run: Optional[bool],
+        upgrade: Optional[bool],
+        index_url: Optional[str],
+        extra_index_url: Optional[str],
 ) -> None:
     """Add a package to the project."""
     click.echo(f"Adding {packages}")
@@ -108,8 +109,8 @@ def install(
 @click.pass_context
 def uninstall(
         ctx: Context,
-        group: str | None,
-        packages: tuple[str, ...]
+        group: Optional[str],
+        packages: Sequence[str]
 ) -> None:
     """Remove a package from the project."""
     click.echo(f"Removing {packages}")
@@ -177,15 +178,15 @@ def uninstall(
     help="The path to the project file.",
 )
 def build(
-    version: bool | None,
-    verbose: bool | None,
-    sdist: bool | None,
-    wheel: bool | None,
-    skip_dependency_check: bool | None,
-    no_isolation: bool | None,
-    config_settings: tuple[tuple[str, str], ...],
-    outdir: str | None,
-    installer: str | None
+    version: Optional[bool],
+    verbose: Optional[bool],
+    sdist: Optional[bool],
+    wheel: Optional[bool],
+    skip_dependency_check: Optional[bool],
+    no_isolation: Optional[bool],
+    config_settings: Sequence[Tuple[str, str]],
+    outdir: Optional[str],
+    installer: Optional[str]
 ) -> None:
     """Build the project."""
     click.echo("Building")
@@ -302,21 +303,21 @@ def build(
     help="Disable the progress bar."
 )
 def publish(
-        repository: str | None,
-        repository_url: str | None,
-        attestations: bool | None,
-        sign: bool | None,
-        sign_with: str | None,
-        identity: str | None,
-        username: str | None,
-        password: str | None,
-        non_interactive: bool | None,
-        comment: str | None,
-        skip_existing: bool | None,
-        cert: str | None,
-        client_cert: str | None,
-        verbose: bool | None,
-        disable_progress_bar: bool | None,
+        repository: Optional[str],
+        repository_url: Optional[str],
+        attestations: Optional[bool],
+        sign: Optional[bool],
+        sign_with: Optional[str],
+        identity: Optional[str],
+        username: Optional[str],
+        password: Optional[str],
+        non_interactive: Optional[bool],
+        comment: Optional[str],
+        skip_existing: Optional[bool],
+        cert: Optional[str],
+        client_cert: Optional[str],
+        verbose: Optional[bool],
+        disable_progress_bar: Optional[bool],
 ) -> None:
     """Build the project."""
     click.echo("Publishing")
@@ -381,9 +382,9 @@ def init(
         ctx: Context,
         name: str,
         version: str,
-        description: str | None,
-        author: str | None,
-        email: str | None,
+        description: Optional[str],
+        author: Optional[str],
+        email: Optional[str],
 ) -> None:
     """Remove a package from the project."""
     click.echo(f"Initializing {name}")

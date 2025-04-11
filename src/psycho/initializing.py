@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 from tomlkit import document, table, array, inline_table
 
@@ -9,9 +10,9 @@ def initialize(
         project_file: Path,
         name: str,
         version: str,
-        description: str | None,
-        author: str | None = None,
-        email: str | None = None,
+        description: Optional[str],
+        author: Optional[str] = None,
+        email: Optional[str] = None,
 ) -> None:
     if project_file.exists():
         raise FileExistsError(f"File {project_file} already exists.")

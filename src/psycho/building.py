@@ -1,6 +1,7 @@
 from pathlib import Path
 import subprocess
 import sys
+from typing import Dict, Union, Optional
 
 
 def _build(
@@ -12,15 +13,15 @@ def _build(
 
 
 def build_project(
-        version: bool | None,
-        verbose: bool | None,
-        sdist: bool | None,
-        wheel: bool | None,
-        skip_dependency_check: bool | None,
-        no_isolation: bool | None,
-        config_settings: dict[str, str],
-        outdir: Path | None,
-        installer: str | None
+        version: Optional[bool],
+        verbose: Optional[bool],
+        sdist: Optional[bool],
+        wheel: Optional[bool],
+        skip_dependency_check: Optional[bool],
+        no_isolation: Optional[bool],
+        config_settings: Dict[str, str],
+        outdir: Optional[Path],
+        installer: Optional[str]
 ) -> None:
     """Build the project."""
     args: list[str] = []

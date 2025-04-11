@@ -1,7 +1,7 @@
 from glob import glob
 import subprocess
 import sys
-from typing import Literal
+from typing import List, Literal, Optional
 
 
 def _twine(
@@ -14,24 +14,24 @@ def _twine(
 
 
 def publish_project(
-        repository: str | None,
-        repository_url: str | None,
-        attestations: bool | None,
-        sign: bool | None,
-        sign_with: str | None,
-        identity: str | None,
-        username: str | None,
-        password: str | None,
-        non_interactive: bool | None,
-        comment: str | None,
-        skip_existing: bool | None,
-        cert: str | None,
-        client_cert: str | None,
-        verbose: bool | None,
-        disable_progress_bar: bool | None,
+        repository: Optional[str],
+        repository_url: Optional[str],
+        attestations: Optional[bool],
+        sign: Optional[bool],
+        sign_with: Optional[str],
+        identity: Optional[str],
+        username: Optional[str],
+        password: Optional[str],
+        non_interactive: Optional[bool],
+        comment: Optional[str],
+        skip_existing: Optional[bool],
+        cert: Optional[str],
+        client_cert: Optional[str],
+        verbose: Optional[bool],
+        disable_progress_bar: Optional[bool],
 ) -> None:
     """Build the project."""
-    args: list[str] = []
+    args: List[str] = []
     if repository is not None:
         args.append(f"--repository {repository}")
     if repository_url is not None:

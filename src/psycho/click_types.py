@@ -1,3 +1,5 @@
+from typing import Optional, Tuple
+
 import click
 from click import Parameter, Context
 
@@ -8,9 +10,9 @@ class NameEqualsValueType(click.ParamType):
     def convert(
             self,
             value: str,
-            param: Parameter | None,
-            ctx: Context | None
-    ) -> tuple[str, str | None]:
+            param: Optional[Parameter],
+            ctx: Optional[Context]
+    ) -> Tuple[str, Optional[str]]:
         name, sep, val = value.partition("=")
         if sep == "=":
             return name, val
