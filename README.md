@@ -31,6 +31,7 @@ The following are supported.
 * install
 * uninstall
 * build
+* upload
 * publish
 
 ### init
@@ -104,12 +105,20 @@ $ psycho build
 
 This is the equivalent of `python -m build`.
 
+### upload
+
+The upload command will upload a package with twine.
+
+```bash
+$ psycho upload
+```
+
+This is the equivalent of `twine upload dist/*`.
+
 ### publish
 
-The publish command will upload a package with twine.
+This combines the build and publish in one command.
 
 ```bash
 $ psycho publish
 ```
-
-This is the equivalent of `twine upload dist/*`.

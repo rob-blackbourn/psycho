@@ -11,6 +11,7 @@ from psycho.click_types import NAME_EQ_VALUE
 from psycho.dependencies import add_packages, remove_packages
 from psycho.initializing import initialize
 from psycho.publishing import publish_project
+from psycho.uploading import upload_project
 
 
 @click.group()
@@ -207,7 +208,184 @@ def build(
     )
 
 
+@cli.command(help="Upload the project.")
+@click.argument("files", nargs=-1)
+@click.option(
+    "-r",
+    "--repository",
+    default=None,
+    type=str,
+    help="The repository (package index) to upload the package to. Should be a section in the config file [default: pypi]. (Can also be set via TWINE_REPOSITORY environment variable.)"
+)
+@click.option(
+    "--repository-url",
+    default=None,
+    type=str,
+    help="The repository (package index) URL to upload the package to. This overrides --repository. (Can also be set via TWINE_REPOSITORY_URL environment variable.)"
+)
+@click.option(
+    '--attestations',
+    is_flag=True,
+    default=None,
+    help="Upload each file's associated attestations."
+)
+@click.option(
+    '-s',
+    '--sign',
+    is_flag=True,
+    default=None,
+    help="Sign files to upload using GPG."
+)
+@click.option(
+    "--sign-with",
+    default=None,
+    type=str,
+    help="GPG program used to sign uploads [default: gpg]."
+)
+@click.option(
+    "-i",
+    "--identity",
+    default=None,
+    type=str,
+    help="GPG identity used to sign files."
+)
+@click.option(
+    "-u",
+    "--username",
+    default=None,
+    type=str,
+    help="The username to authenticate to the repository (package index) as. Has no effect on PyPI or TestPyPI. (Can also be set via TWINE_USERNAME environment variable.)"
+)
+@click.option(
+    "-p",
+    "--password",
+    default=None,
+    type=str,
+    help="The password to authenticate to the repository (package index) with. (Can also be set via TWINE_PASSWORD environment variable.)"
+)
+@click.option(
+    '--non-interactive',
+    is_flag=True,
+    default=None,
+    help="Do not interactively prompt for username/password if the required credentials are missing. (Can also be set via TWINE_NON_INTERACTIVE environment variable.)"
+)
+@click.option(
+    "-c",
+    "--comment",
+    default=None,
+    type=str,
+    help="The comment to include with the distribution file."
+)
+@click.option(
+    '--skip-existing',
+    is_flag=True,
+    default=None,
+    help="Do not interactively prompt for username/password if the required credentials are missing. (Can also be set via TWINE_NON_INTERACTIVE environment variable.)"
+)
+@click.option(
+    "--cert",
+    type=click.Path(exists=True),
+    help="Path to alternate CA bundle (can also be set via TWINE_CERT environment variable).",
+)
+@click.option(
+    "--client-cert",
+    type=click.Path(exists=True),
+    help="Path to SSL client certificate, a single file containing the private key and the certificate in PEM format.",
+)
+@click.option(
+    '--verbose',
+    is_flag=True,
+    default=None,
+    help="Show verbose output."
+)
+@click.option(
+    '--disable-progress-bar',
+    is_flag=True,
+    default=None,
+    help="Disable the progress bar."
+)
+def upload(
+        files: Sequence[str],
+        repository: Optional[str],
+        repository_url: Optional[str],
+        attestations: Optional[bool],
+        sign: Optional[bool],
+        sign_with: Optional[str],
+        identity: Optional[str],
+        username: Optional[str],
+        password: Optional[str],
+        non_interactive: Optional[bool],
+        comment: Optional[str],
+        skip_existing: Optional[bool],
+        cert: Optional[str],
+        client_cert: Optional[str],
+        verbose: Optional[bool],
+        disable_progress_bar: Optional[bool],
+) -> None:
+    """Build the project."""
+    upload_project(
+        repository,
+        repository_url,
+        attestations,
+        sign,
+        sign_with,
+        identity,
+        username,
+        password,
+        non_interactive,
+        comment,
+        skip_existing,
+        cert,
+        client_cert,
+        verbose,
+        disable_progress_bar,
+        *files
+    )
+
+
 @cli.command(help="Publish the project.")
+@click.option(
+    '-s', '--sdist',
+    is_flag=True,
+    default=None,
+    help="build a source distribution (disables the default behavior)"
+)
+@click.option(
+    '-w',
+    '--wheel',
+    is_flag=True,
+    default=None
+)
+@click.option(
+    '-x',
+    '--skip-dependency-check',
+    is_flag=True,
+    default=None
+)
+@click.option(
+    '-n',
+    '--no-isolation',
+    is_flag=True,
+    default=None
+)
+@click.option(
+    '-C', '--config-setting', 'config_settings',
+    multiple=True,
+    type=NAME_EQ_VALUE,
+    help="settings to pass to the backend. Multiple settings can be provided. Settings beginning with a hyphen will erroneously be interpreted as options to build if separated by a space character; use --config-setting=--my-setting -C--my-other-setting (default: None)"
+)
+@click.option(
+    "--installer",
+    default=None,
+    type=str,
+    help="Python package installer to use (defaults to pip)"
+)
+@click.option(
+    "-o", "--outdir",
+    default=None,
+    type=click.Path(exists=True),
+    help="The path to the project file.",
+)
 @click.option(
     "-r",
     "--repository",
@@ -303,6 +481,13 @@ def build(
     help="Disable the progress bar."
 )
 def publish(
+        sdist: Optional[bool],
+        wheel: Optional[bool],
+        skip_dependency_check: Optional[bool],
+        no_isolation: Optional[bool],
+        config_settings: Sequence[Tuple[str, str]],
+        outdir: Optional[str],
+        installer: Optional[str],
         repository: Optional[str],
         repository_url: Optional[str],
         attestations: Optional[bool],
@@ -321,7 +506,17 @@ def publish(
 ) -> None:
     """Build the project."""
     click.echo("Publishing")
+    config_vars = {
+        name: value
+        for name, value in config_settings
+    }
     publish_project(
+        sdist,
+        wheel,
+        skip_dependency_check,
+        no_isolation,
+        config_vars,
+        installer,
         repository,
         repository_url,
         attestations,

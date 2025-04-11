@@ -1,19 +1,20 @@
+import tempfile
 from glob import glob
 import subprocess
 import sys
-from typing import List, Literal, Optional
+from typing import Dict, List, Literal, Optional
 
-
-def _twine(
-        operation: Literal['upload'],
-        *args: str,
-) -> None:
-    subprocess.check_call([
-        sys.executable, "-m", "twine", operation, *args
-    ])
+from .building import build_project
+from .uploading import upload_project
 
 
 def publish_project(
+        sdist: Optional[bool],
+        wheel: Optional[bool],
+        skip_dependency_check: Optional[bool],
+        no_isolation: Optional[bool],
+        config_settings: Dict[str, str],
+        installer: Optional[str],
         repository: Optional[str],
         repository_url: Optional[str],
         attestations: Optional[bool],
@@ -30,37 +31,36 @@ def publish_project(
         verbose: Optional[bool],
         disable_progress_bar: Optional[bool],
 ) -> None:
-    """Build the project."""
-    args: List[str] = []
-    if repository is not None:
-        args.append(f"--repository {repository}")
-    if repository_url is not None:
-        args.append(f"--repository-url {repository_url}")
-    if attestations:
-        args.append("--attestations")
-    if sign:
-        args.append("--sign")
-    if sign_with is not None:
-        args.append(f"--sign-with {sign_with}")
-    if identity is not None:
-        args.append(f"--identity {identity}")
-    if username is not None:
-        args.append(f"--username {username}")
-    if password is not None:
-        args.append(f"--password {password}")
-    if non_interactive:
-        args.append("--non-interactive")
-    if comment is not None:
-        args.append(f"--comment {comment}")
-    if skip_existing:
-        args.append("--skip-existing")
-    if cert is not None:
-        args.append(f"--cert {cert}")
-    if client_cert is not None:
-        args.append(f"--client-cert {client_cert}")
-    if verbose:
-        args.append("--verbose")
-    if disable_progress_bar:
-        args.append("--disable-progress-bar")
-
-    _twine('upload', *args, *glob("dist/*"))
+    with tempfile.TemporaryDirectory() as outdir:
+        build_project(
+            False,
+            verbose,
+            sdist,
+            wheel,
+            skip_dependency_check,
+            no_isolation,
+            config_settings,
+            outdir,
+            installer
+        )
+        files = glob(f"{outdir}/*")
+        if not files:
+            raise FileNotFoundError("No files found to upload.")
+        upload_project(
+            repository,
+            repository_url,
+            attestations,
+            sign,
+            sign_with,
+            identity,
+            username,
+            password,
+            non_interactive,
+            comment,
+            skip_existing,
+            cert,
+            client_cert,
+            verbose,
+            disable_progress_bar,
+            *files
+        )
