@@ -1,7 +1,7 @@
 """Commands for the Psycho CLI."""
 
 from pathlib import Path
-from typing import Optional, Sequence, Tuple
+from typing import Literal, Optional, Sequence, Tuple
 
 import click
 from click import Context
@@ -381,12 +381,6 @@ def upload(
     help="Python package installer to use (defaults to pip)"
 )
 @click.option(
-    "-o", "--outdir",
-    default=None,
-    type=click.Path(exists=True),
-    help="The path to the project file.",
-)
-@click.option(
     "-r",
     "--repository",
     default=None,
@@ -486,7 +480,6 @@ def publish(
         skip_dependency_check: Optional[bool],
         no_isolation: Optional[bool],
         config_settings: Sequence[Tuple[str, str]],
-        outdir: Optional[str],
         installer: Optional[str],
         repository: Optional[str],
         repository_url: Optional[str],
@@ -574,7 +567,7 @@ def publish(
 )
 @click.option(
     '--create',
-    is_flag=True,
+    type=click.Choice(['local-venv']),
     default=None,
     help="Create the project."
 )
@@ -586,7 +579,7 @@ def init(
         description: Optional[str],
         author: Optional[str],
         email: Optional[str],
-        create: Optional[bool]
+        create: Optional[Literal['local-venv']]
 ) -> None:
     """Remove a package from the project."""
     click.echo(f"Initializing {name}")

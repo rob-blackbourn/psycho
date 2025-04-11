@@ -2,7 +2,7 @@ from importlib.resources import open_text, Package, Resource, ResourceLoader
 from pathlib import Path
 import shutil
 import subprocess
-from typing import Optional
+from typing import Literal, Optional
 
 import pkg_resources
 from tomlkit import document, table, array, inline_table
@@ -17,7 +17,7 @@ def initialize(
         description: Optional[str],
         author: Optional[str],
         email: Optional[str],
-        create: Optional[bool],
+        create: Optional[Literal['local-venv']],
 ) -> None:
     if project_file.exists():
         raise FileExistsError(f"File {project_file} already exists.")
