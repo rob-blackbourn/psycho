@@ -1,6 +1,6 @@
 [project]
 name = "psycho"
-version = "1.0.0-alpha.5"
+version = "1.0.0-alpha.6"
 description = "A tool to manage python projects and their dependencies."
 authors = [
     { name = "Rob Blackbourn", email = "rob.blackbourn@gmail.com" }
@@ -36,6 +36,9 @@ psycho = "psycho:cli"
 [project.urls]
 Repository = "https://github.com/rob-blackbourn/psycho"
 Issues = "https://github.com/rob-blackbourn/psycho/issues"
+
+[tool.setuptools.package-data]
+"psycho.data" = ["*.txt"]
 
 [build-system]
 requires = ["setuptools>=61.0"]

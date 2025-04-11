@@ -377,6 +377,12 @@ def publish(
     prompt=True,
     help="Author"
 )
+@click.option(
+    '--create',
+    is_flag=True,
+    default=None,
+    help="Create the project."
+)
 @click.pass_context
 def init(
         ctx: Context,
@@ -385,6 +391,7 @@ def init(
         description: Optional[str],
         author: Optional[str],
         email: Optional[str],
+        create: Optional[bool]
 ) -> None:
     """Remove a package from the project."""
     click.echo(f"Initializing {name}")
@@ -396,6 +403,7 @@ def init(
         description,
         author,
         email,
+        create,
     )
 
 
