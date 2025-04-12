@@ -22,7 +22,7 @@ dependencies = [
     "tomlkit>=0.13.2",
     "packaging>=24.2",
     "build>=1.0.0",
-    "twine>=6.1.0"
+    "twine>=6.1.0",
 ]
 license = { text = "Apache-2.0" }
 keywords = [

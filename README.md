@@ -17,8 +17,9 @@ pip install psycho
 
 Python projects are migrating away from using `setup.py` to `pyproject.toml`.
 While a number of excellent projects provide custom tooling, there is no built
-in support for automating project management with the standard tools:
+in support for automating project management with just the standard tools:
 
+* [setuptools](https://pypi.org/project/setuptools/)
 * [pip](https://pypi.org/project/pip/)
 * [build](https://pypi.org/project/build/)
 * [twine](https://pypi.org/project/twine/)
@@ -55,7 +56,8 @@ $ psycho init --name my-package --version 0.1.0 --description "My package" --aut
 ```
 
 There is one further flag `--create local-venv` which creates the standard
-project structure, which a local virtual environment. 
+project structure, with a local virtual environment. It will also upgrade pip and
+install the project in the virtual environment.
 
 ### install
 

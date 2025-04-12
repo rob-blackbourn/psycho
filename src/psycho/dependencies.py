@@ -52,8 +52,8 @@ def _recreate_required_dependency_requirements(
 ) -> None:
     dependencies = array()
     for req in requirements.values():
-        dependencies.add_line(str(req))
-    project['dependencies'] = dependencies
+        dependencies.append(str(req))
+    project['dependencies'] = dependencies.multiline(True)
 
 
 def _read_optional_dependency_requirements(
@@ -87,10 +87,10 @@ def _recreate_optional_dependency_requirements(
 ) -> None:
     dependencies = array()
     for req in requirements.values():
-        dependencies.add_line(str(req))
+        dependencies.append(str(req))
     optional_dependencies = cast(Table, project['optional-dependencies'])
     if len(dependencies) > 0:
-        optional_dependencies[group] = dependencies
+        optional_dependencies[group] = dependencies.multiline(True)
     else:
         del optional_dependencies[group]
         if len(optional_dependencies) == 0:
