@@ -1,6 +1,8 @@
 """Commands for the Psycho CLI."""
 
+import os
 from pathlib import Path
+import platform
 from typing import Literal, Optional, Sequence, Tuple
 
 import click
@@ -11,6 +13,7 @@ from psycho.click_types import NAME_EQ_VALUE
 from psycho.dependencies import add_packages, remove_packages
 from psycho.environment import environment, location
 from psycho.initializing import initialize
+from psycho.paths import make_venv_bin
 from psycho.publishing import publish_project
 from psycho.uploading import upload_project
 
@@ -27,8 +30,12 @@ def cli(ctx: Context, project_file: str) -> None:
     """Utilities for manageging pyproject.toml with pip, build and twine."""
 
     ctx.ensure_object(dict)
-
     ctx.obj["PROJECT_FILE"] = Path(project_file)
+
+    if 'VIRTUAL_ENV' in os.environ:
+        # Ensure the virtual environment wins.
+        venv_bin = make_venv_bin(Path(os.environ['VIRTUAL_ENV']))
+        os.environ['PATH'] = str(venv_bin) + os.pathsep + os.environ['PATH']
 
 
 @cli.command(help="Install a package.")

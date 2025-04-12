@@ -1,4 +1,5 @@
 from pathlib import Path
+import platform
 import shutil
 import subprocess
 from typing import Literal, Optional
@@ -6,6 +7,7 @@ from typing import Literal, Optional
 import pkg_resources
 from tomlkit import document, table, array, inline_table
 
+from .paths import make_venv_bin
 from .projects import write_pyproject
 
 
@@ -64,14 +66,16 @@ def initialize(
         # Initialize a git repository
         subprocess.run(['git', 'init'], check=True)
 
-    if not Path('venv').exists():
-        # Create a virtual environment
-        subprocess.run(['python', '-m', 'venv', '.venv'], check=True)
-        # Upgrade pip
-        subprocess.run(
-            ['./.venv/bin/python', '-m', 'pip', 'install', '--upgrade', 'pip'],
-            check=True
-        )
+    # Create a virtual environment
+    venv = Path('.') / 'venv'
+    subprocess.run(['python', '-m', 'venv', str(venv)], check=True)
+    venv_bin = make_venv_bin(venv)
+    venv_python = venv_bin / 'python'
+    # Upgrade pip
+    subprocess.run(
+        [str(venv_python), '-m', 'pip', 'install', '--upgrade', 'pip'],
+        check=True
+    )
 
     # Create a source directory
     package_name = name.replace('-', '_')
@@ -82,4 +86,7 @@ def initialize(
         package_file.touch()
 
     # install the project in editable mode
-    subprocess.run(['./.venv/bin/pip', 'install', '-e', '.'], check=True)
+    subprocess.run(
+        [str(venv_python), '-m', 'pip', 'install', '-e', '.'],
+        check=True
+    )

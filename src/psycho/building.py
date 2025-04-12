@@ -1,14 +1,13 @@
-from pathlib import Path
 import subprocess
 import sys
-from typing import Dict, Union, Optional
+from typing import Dict, Optional
 
 
 def _build(
         *args: str
 ) -> None:
     subprocess.check_call([
-        sys.executable, "-m", "build", *args
+        'python', "-m", "build", *args
     ])
 
 

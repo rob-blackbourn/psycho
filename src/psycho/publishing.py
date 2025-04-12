@@ -1,5 +1,4 @@
 import tempfile
-from glob import glob
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -42,8 +41,8 @@ def publish_project(
             outdir,
             installer
         )
-        files = glob(f"{outdir}/*")
-        if not files:
+        files = [str(f) for f in Path(outdir).glob('*')]
+        if len(files) == 0:
             raise FileNotFoundError("No files found to upload.")
         upload_project(
             repository,

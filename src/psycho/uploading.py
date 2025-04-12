@@ -1,6 +1,4 @@
-from glob import glob
 import subprocess
-import sys
 from typing import List, Literal, Optional
 
 
@@ -9,7 +7,7 @@ def _twine(
         *args: str,
 ) -> None:
     subprocess.check_call([
-        sys.executable, "-m", "twine", operation, *args
+        'python', "-m", "twine", operation, *args
     ])
 
 

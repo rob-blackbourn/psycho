@@ -18,13 +18,13 @@ def _pip(
         *args: str
 ) -> None:
     subprocess.check_call([
-        sys.executable, "-m", "pip", command, *args, str(requirement)
+        'python', "-m", "pip", command, *args, str(requirement)
     ])
 
 
 def _pip_install_project(args: List[str]) -> None:
     subprocess.check_call([
-        sys.executable, "-m", "pip", 'install', '--editable', '.', *args
+        'python', "-m", "pip", 'install', '--editable', '.', *args
     ])
 
 
