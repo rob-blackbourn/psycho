@@ -55,7 +55,7 @@ $ psycho init --name my-package --version 0.1.0 --description "My package" --aut
 ```
 
 There is one further flag `--create local-venv` which creates the standard
-project structure, which a local virtual environment.
+project structure, which a local virtual environment. 
 
 ### install
 

@@ -1,5 +1,4 @@
 from pathlib import Path
-import platform
 import shutil
 import subprocess
 from typing import Literal, Optional
@@ -18,7 +17,7 @@ def initialize(
         description: Optional[str],
         author: Optional[str],
         email: Optional[str],
-        create: Optional[Literal['local-venv']],
+        create: Optional[Literal['local', 'local-venv']],
 ) -> None:
     if project_file.exists():
         raise FileExistsError(f"File {project_file} already exists.")
@@ -53,6 +52,14 @@ def initialize(
     if not create:
         return
 
+    # Create a source directory
+    package_name = name.replace('-', '_')
+    package_dir = Path('src') / package_name
+    package_dir.mkdir(parents=True, exist_ok=True)
+    init_file = package_dir / '__init__.py'
+    if not init_file.exists():
+        init_file.touch()
+
     gitignore = Path('.gitignore')
     if not gitignore.exists():
         # Add a .gitignore file
@@ -68,22 +75,15 @@ def initialize(
 
     # Create a virtual environment
     venv = Path('.') / 'venv'
-    subprocess.run(['python', '-m', 'venv', str(venv)], check=True)
-    venv_bin = make_venv_bin(venv)
-    venv_python = venv_bin / 'python'
-    # Upgrade pip
-    subprocess.run(
-        [str(venv_python), '-m', 'pip', 'install', '--upgrade', 'pip'],
-        check=True
-    )
-
-    # Create a source directory
-    package_name = name.replace('-', '_')
-    package_dir = Path('src') / package_name
-    package_dir.mkdir(parents=True, exist_ok=True)
-    package_file = package_dir / '__init__.py'
-    if not package_file.exists():
-        package_file.touch()
+    if not venv.exists():
+        subprocess.run(['python', '-m', 'venv', str(venv)], check=True)
+        venv_bin = make_venv_bin(venv)
+        venv_python = venv_bin / 'python'
+        # Upgrade pip
+        subprocess.run(
+            [str(venv_python), '-m', 'pip', 'install', '--upgrade', 'pip'],
+            check=True
+        )
 
     # install the project in editable mode
     subprocess.run(
