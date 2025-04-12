@@ -9,6 +9,7 @@ from click import Context
 from psycho.building import build_project
 from psycho.click_types import NAME_EQ_VALUE
 from psycho.dependencies import add_packages, remove_packages
+from psycho.environment import environment, location
 from psycho.initializing import initialize
 from psycho.publishing import publish_project
 from psycho.uploading import upload_project
@@ -593,6 +594,25 @@ def init(
         email,
         create,
     )
+
+
+@cli.command(help="Show the environment variables.")
+def env() -> None:
+    """Remove a package from the project."""
+    dct = environment()
+    for name, value in dct.items():
+        click.echo(f"{name}='{value}'")
+
+
+@cli.command(help="Show the path to an executable.")
+@click.argument("exe", required=True)
+def which(exe: str) -> None:
+    """Remove a package from the project."""
+    path = location(exe)
+    if path is None:
+        click.echo(f"{exe} not found")
+    else:
+        click.echo(f"{exe}: {path}")
 
 
 if __name__ == "__main__":
