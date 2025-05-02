@@ -74,7 +74,7 @@ def initialize(
         subprocess.run(['git', 'init'], check=True)
 
     # Create a virtual environment
-    venv = Path('.') / 'venv'
+    venv = Path('.') / '.venv'
     if not venv.exists():
         subprocess.run(['python', '-m', 'venv', str(venv)], check=True)
         venv_bin = make_venv_bin(venv)

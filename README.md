@@ -52,7 +52,12 @@ Initializing my-package
 Alternatively values can be provided as arguments.
 
 ```bash
-$ psycho init --name my-package --version 0.1.0 --description "My package" --author "Rob Blackbourb" --email "rob@example.com"
+$ psycho init \
+    --name my-package \
+    --version 0.1.0 \
+    --description "My package" \
+    --author "Rob Blackbourb" \
+    --email "rob@example.com"
 ```
 
 There is one further flag `--create local-venv` which creates the standard
