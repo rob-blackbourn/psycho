@@ -1,6 +1,6 @@
 [project]
 name = "psycho"
-version = "1.0.3"
+version = "1.0.4"
 description = "A tool to manage python projects and their dependencies."
 authors = [
     { name = "Rob Blackbourn", email = "rob.blackbourn@gmail.com" }
@@ -20,6 +20,7 @@ readme = "README.md"
 dependencies = [
     "click>=8.1.8",
     "tomlkit>=0.13.2",
+    "setuptools",
     "packaging>=24.2",
     "build>=1.0.0",
     "twine>=6.1.0",
