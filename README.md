@@ -6,11 +6,11 @@ Python project management automation using standard build tools.
 
 This project is a working prototype.
 
-It can be installed from pypi. Its probably best to install as a user
-dependency, or in a virtual environment.
+This package is available from pypi, but the best way to install it is with
+[pipx](https://github.com/pypa/pipx).
 
 ```bash
-pip install psycho
+pipx install psycho
 ```
 
 ## Overview
