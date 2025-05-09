@@ -90,7 +90,9 @@ def initialize(
     if not gitignore.exists():
         # Add a .gitignore file
         infile = pkg_resources.resource_filename(
-            'psycho', 'data/gitignore.txt')
+            'psycho',
+            'data/gitignore.txt'
+        )
         with gitignore.open('wt', encoding='utf-8') as fout:
             with open(infile, 'rt', encoding='utf-8') as fin:
                 fout.write(fin.read())
@@ -110,6 +112,21 @@ def initialize(
             [str(venv_python), '-m', 'pip', 'install', '--upgrade', 'pip'],
             check=True
         )
+
+    readme = Path('.') / 'README.md'
+    if not readme.exists():
+        infile = pkg_resources.resource_filename(
+            'psycho',
+            'data/README.md'
+        )
+        with readme.open('wt', encoding='utf-8') as fout:
+            with open(infile, 'rt', encoding='utf-8') as fin:
+                fout.write(
+                    fin.read().format(
+                        name=name,
+                        description=description
+                    )
+                )
 
     # install the project in editable mode
     subprocess.run(
