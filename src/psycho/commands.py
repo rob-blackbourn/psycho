@@ -12,7 +12,12 @@ from psycho.building import build_project
 from psycho.click_types import NAME_EQ_VALUE
 from psycho.dependencies import add_packages, remove_packages
 from psycho.environment import environment, location
-from psycho.initializing import initialize
+from psycho.initializing import (
+    initialize,
+    init_get_name,
+    init_get_author,
+    init_get_email
+)
 from psycho.paths import make_venv_bin
 from psycho.publishing import publish_project
 from psycho.uploading import upload_project
@@ -542,6 +547,7 @@ def publish(
     type=str,
     required=True,
     prompt=True,
+    default=init_get_name,
     help="Name"
 )
 @click.option(
@@ -555,22 +561,22 @@ def publish(
 @click.option(
     "--description",
     type=str,
-    default=None,
     prompt=True,
+    default="Let's go psycho!",
     help="Description"
 )
 @click.option(
     "--author",
     type=str,
-    default=None,
     prompt=True,
+    default=init_get_author,
     help="Author"
 )
 @click.option(
     "--email",
     type=str,
-    default=None,
     prompt=True,
+    default=init_get_email,
     help="Author"
 )
 @click.option(

@@ -1,5 +1,7 @@
+import getpass
 from pathlib import Path
 import shutil
+import socket
 import subprocess
 from typing import Literal, Optional
 
@@ -8,6 +10,30 @@ from tomlkit import document, table, array, inline_table
 
 from .paths import make_venv_bin
 from .projects import write_pyproject
+
+
+def init_get_name() -> str:
+    return Path.cwd().name
+
+
+def init_get_author() -> str:
+    try:
+        return subprocess.check_output(
+            ['git', 'config', '--get', 'user.name'],
+            encoding='utf-8'
+        ).strip()
+    except:
+        return getpass.getuser()
+
+
+def init_get_email() -> str:
+    try:
+        return subprocess.check_output(
+            ['git', 'config', '--get', 'user.email'],
+            encoding='utf-8'
+        ).strip()
+    except:
+        return getpass.getuser() + '@' + socket.getfqdn()
 
 
 def initialize(
