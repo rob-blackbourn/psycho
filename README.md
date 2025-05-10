@@ -2,6 +2,12 @@
 
 Python project management automation using standard build tools.
 
+<p align="center">
+<a href="https://github.com/rob-blackbourn/psycho/raw/main/psycho-demo.gif">
+<img src="https://github.com/rob-blackbourn/psycho/raw/main/psycho-demo.gif"/>
+</a>
+</p>
+
 ## Status
 
 This project is a working prototype.
