@@ -102,7 +102,7 @@ This can be used with the optional flag (with a group name) to uninstall an opti
 dependency.
 
 ```bash
-$ psycho install --optional dev pytest
+$ psycho uninstall --optional dev pytest
 ```
 
 ### build
