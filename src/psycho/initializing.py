@@ -100,6 +100,7 @@ def initialize(
     if shutil.which('git') is not None:
         # Initialize a git repository
         subprocess.run(['git', 'init'], check=True)
+        subprocess.run(['git', 'branch', '-M', 'main'], check=True)
 
     # Create a virtual environment
     venv = Path('.') / '.venv'
