@@ -1,4 +1,4 @@
-# psycho
+# Let's go psycho!
 
 Python project management automation using standard build tools.
 
@@ -12,8 +12,8 @@ Python project management automation using standard build tools.
 
 This project is a working prototype.
 
-This package is available from pypi, but the best way to install it is with
-[pipx](https://github.com/pypa/pipx).
+This package is available from [pypi](https://pypi.org/project/psycho/),
+but the best way to install it is with [pipx](https://github.com/pypa/pipx).
 
 ```bash
 pipx install psycho

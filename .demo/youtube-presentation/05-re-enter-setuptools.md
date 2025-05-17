@@ -1,0 +1,17 @@
+---
+theme: default
+layout: default
+---
+
+# Re-enter setuptools
+
+However, silently, in the background, things were moving in the standard Python
+distribution.
+
+The `setup.py` became optional, and finally was replaced by `pyproject.toml`.
+
+The package source could be installed with `pip install -e .`.
+
+There were places to specify the readme, the license file, repository urls!
+
+So now I've come full circle and I've converted my projects back to **setuptools**!

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://demotime.elio.dev/demo-time.schema.json",
+  "title": "YouTube Presentation",
+  "description": "",
+  "demos": [
+    {
+      "title": "Introduction",
+      "description": "",
+      "steps": [
+        {
+          "action": "openSlide",
+          "path": ".demo/youtube-presentation/01-introduction.md"
+        }
+      ]
+    },
+    {
+      "title": "A lot has changed",
+      "description": "",
+      "steps": [
+        {
+          "action": "openSlide",
+          "path": ".demo/youtube-presentation/02-a-lot-has-changed.md"
+        }
+      ]
+    },
+    {
+      "title": "Tool Envy",
+      "description": "",
+      "steps": [
+        {
+          "action": "openSlide",
+          "path": ".demo/youtube-presentation/03-tool-envy.md"
+        }
+      ]
+    },
+    {
+      "title": "Buyers Remorse",
+      "description": "",
+      "steps": [
+        {
+          "action": "openSlide",
+          "path": ".demo/youtube-presentation/04-buyers-remorse.md"
+        }
+      ]
+    },
+    {
+      "title": "Re-enter setuptools",
+      "description": "",
+      "steps": [
+        {
+          "action": "openSlide",
+          "path": ".demo/youtube-presentation/05-re-enter-setuptools.md"
+        }
+      ]
+    },
+    {
+      "title": "I miss my tooling",
+      "description": "",
+      "steps": [
+        {
+          "action": "openSlide",
+          "path": ".demo/youtube-presentation/06-missing-tooling.md"
+        }
+      ]
+    }
+  ]
+}
