@@ -5,9 +5,9 @@ layout: default
 
 # Buyers Remorse
 
-There was a downside to this. You needed to install the build tools, in order to
-build and develop the project.
+There was a downside to this. You needed to install the specific build tool, in
+order to build and develop the project.
 
-You find a great package; clone it, setup your virtual environment, and then;
-oh. It uses a build system I don't have. Now I need to google the instructions
-for installing the system, and find out how to use it.
+This was a barrier to entry. You find an interesting package; clone it, setup
+your virtual environment, and then; oh. It uses a build system I don't have.
+Shall I bother to find out how to get it set up, or just move on?

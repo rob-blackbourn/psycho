@@ -62,6 +62,66 @@
           "path": ".demo/youtube-presentation/06-missing-tooling.md"
         }
       ]
+    },
+    {
+      "title": "Project Layout",
+      "description": "",
+      "steps": [
+        {
+          "action": "openSlide",
+          "path": ".demo/youtube-presentation/07-project-layout.md"
+        }
+      ]
+    },
+    {
+      "title": "Project File",
+      "description": "",
+      "steps": [
+        {
+          "action": "openSlide",
+          "path": ".demo/youtube-presentation/08-pyproject-file.md"
+        }
+      ]
+    },
+    {
+      "title": "Go psycho",
+      "description": "",
+      "steps": [
+        {
+          "action": "openSlide",
+          "path": ".demo/youtube-presentation/09-lets-go-psycho.md"
+        }
+      ]
+    },
+    {
+      "title": "Go psycho",
+      "description": "",
+      "steps": [
+        {
+          "action": "openSlide",
+          "path": ".demo/youtube-presentation/10-installing-dependencies.md"
+        }
+      ]
+    },
+    {
+      "title": "Publishing packages",
+      "description": "",
+      "steps": [
+        {
+          "action": "openSlide",
+          "path": ".demo/youtube-presentation/11-publishing-packages.md"
+        }
+      ]
+    },
+    {
+      "title": "Outro",
+      "description": "",
+      "steps": [
+        {
+          "action": "openSlide",
+          "path": ".demo/youtube-presentation/12-outro.md"
+        }
+      ]
     }
   ]
 }
