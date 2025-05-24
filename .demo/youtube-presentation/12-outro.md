@@ -1,6 +1,8 @@
 ---
 theme: default
-layout: default
+customLayout: .demo/youtube-presentation/layout.html
+author: Rob Blackbourn
+date: 24 May 2025
 ---
 
 # Outro
