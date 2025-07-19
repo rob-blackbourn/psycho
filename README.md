@@ -66,7 +66,7 @@ $ psycho init \
     --email "rob@example.com"
 ```
 
-There is one further flag `--create local-venv` which creates the standard
+This creates the standard
 project structure, with a local virtual environment. It will also upgrade pip and
 install the project in the virtual environment.
 
