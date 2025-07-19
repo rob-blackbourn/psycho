@@ -11,12 +11,13 @@ date: 24 May 2025
 pipx install psycho
 ```
 
-We can create the project using `psycho init`. The information will be prompted for.
+We can create the project using `psycho init`. The information will be prompted
+for (unless the `-y` flag is passed, which accepts all defaults).
 
 ```bash
 ~ $ mkdir my-project
 ~ $ cd my-project
-~/my-project $ psycho init --create local-venv
+~/my-project $ psycho init
  Name [my-project]:
  Version [0.1.0]:
  ...
