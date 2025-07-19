@@ -62,8 +62,14 @@ $ psycho init \
     --name my-package \
     --version 0.1.0 \
     --description "My package" \
-    --author "Rob Blackbourb" \
+    --author "Rob Blackbourn" \
     --email "rob@example.com"
+```
+
+Or by passing `-y` to accept the defaults.
+
+```bash
+$ psycho init -y
 ```
 
 This creates the standard project structure, with a local virtual environment.
@@ -73,7 +79,8 @@ The following flags are also supported:
 
 * `--no-venv` to not create a virtual environment.
 * `--no-tests` to not create the tests folder.
-* `--venv <venv-name>` to give the venv folder a specific name (the defailt is ".venv").
+* `--no-upgrade` to prevent the venv dependencies being upgraded (pip).
+* `--venv <venv-name>` to give the venv folder a specific name (the default is ".venv").
 
 ### install
 
