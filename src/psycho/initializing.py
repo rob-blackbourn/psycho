@@ -3,7 +3,7 @@ from pathlib import Path
 import shutil
 import socket
 import subprocess
-from typing import Literal, Optional
+from typing import Optional
 
 import pkg_resources
 from tomlkit import document, table, array, inline_table
@@ -77,18 +77,22 @@ def _initialize_git() -> None:
     subprocess.run(['git', 'branch', '-M', 'main'], check=True)
 
 
-def _create_venv(venv_name: str) -> Path:
+def _create_venv(venv_name: str, upgrade_deps: bool) -> Path:
     # Create a virtual environment
     venv = Path('.') / venv_name
     if not venv.exists():
-        subprocess.run(['python', '-m', 'venv', str(venv)], check=True)
+        extra_args = ["--upgrade-deps"] if upgrade_deps else []
+        subprocess.run(
+            ['python', '-m', 'venv', str(venv), *extra_args],
+            check=True
+        )
     venv_bin = make_venv_bin(venv)
     venv_python = venv_bin / 'python'
-    # Upgrade pip
-    subprocess.run(
-        [str(venv_python), '-m', 'pip', 'install', '--upgrade', 'pip'],
-        check=True
-    )
+    # # Upgrade pip
+    # subprocess.run(
+    #     [str(venv_python), '-m', 'pip', 'install', '--upgrade', 'pip'],
+    #     check=True
+    # )
     return venv_python
 
 
@@ -125,6 +129,7 @@ def initialize(
         author: Optional[str],
         email: Optional[str],
         venv_name: str,
+        no_upgrade: bool,
         no_venv: bool,
         no_tests: bool,
 ) -> None:
@@ -165,7 +170,7 @@ def initialize(
     else:
         _create_gitignore()
         _initialize_git()
-        venv_python = _create_venv(venv_name)
+        venv_python = _create_venv(venv_name, not no_upgrade)
         readme = _create_readme(name, description)
         project.add("readme", str(readme))
 

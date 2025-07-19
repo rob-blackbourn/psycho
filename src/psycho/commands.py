@@ -547,7 +547,6 @@ def publish(
     "--name",
     type=str,
     required=True,
-    prompt=True,
     default=init_get_name,
     help="Name"
 )
@@ -556,35 +555,37 @@ def publish(
     type=str,
     default="0.1.0",
     required=True,
-    prompt=True,
     help="Version"
 )
 @click.option(
     "--description",
     type=str,
-    prompt=True,
     default="Let's go psycho!",
     help="Description"
 )
 @click.option(
     "--author",
     type=str,
-    prompt=True,
     default=init_get_author,
     help="Author"
 )
 @click.option(
     "--email",
     type=str,
-    prompt=True,
     default=init_get_email,
-    help="Author"
+    help="Email"
 )
 @click.option(
     "--venv-name",
     type=str,
     default=".venv",
     help="Name of the folder for the virtual environment"
+)
+@click.option(
+    "--no-upgrade",
+    is_flag=True,
+    default=False,
+    help="Do not upgrade the venv dependencies."
 )
 @click.option(
     "--no-venv",
@@ -598,19 +599,37 @@ def publish(
     default=False,
     help="Do not create a tests folder."
 )
+@click.option(
+    '-y',
+    "--yes",
+    is_flag=True,
+    default=False,
+    help="Accept all defaults."
+)
 @click.pass_context
 def init(
         ctx: Context,
         name: str,
         version: str,
-        description: Optional[str],
-        author: Optional[str],
-        email: Optional[str],
+        description: str,
+        author: str,
+        email: str,
         venv_name: str,
+        no_upgrade: bool,
         no_venv: bool,
         no_tests: bool,
+        yes: bool,
 ) -> None:
     """Remove a package from the project."""
+
+    if not yes:
+        name = click.prompt("Name", default=name, type=str)
+        version = click.prompt("Version", default=version, type=str)
+        description = click.prompt(
+            "Description", default=description, type=str)
+        author = click.prompt("Author", default=author, type=str)
+        email = click.prompt("Email", default=email, type=str)
+
     click.echo(f"Initializing {name}")
     project_file: Path = ctx.obj["PROJECT_FILE"]
     initialize(
@@ -621,6 +640,7 @@ def init(
         author,
         email,
         venv_name,
+        no_upgrade,
         no_venv,
         no_tests
     )
