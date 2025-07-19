@@ -7,6 +7,7 @@ from typing import Literal, Optional, Sequence, Tuple
 
 import click
 from click import Context
+from click_aliases import ClickAliasedGroup
 
 from psycho.building import build_project
 from psycho.click_types import NAME_EQ_VALUE
@@ -23,7 +24,7 @@ from psycho.publishing import publish_project
 from psycho.uploading import upload_project
 
 
-@click.group()
+@click.group(cls=ClickAliasedGroup)
 @click.option(
     "--project-file",
     default="pyproject.toml",
@@ -43,7 +44,7 @@ def cli(ctx: Context, project_file: str) -> None:
         os.environ['PATH'] = str(venv_bin) + os.pathsep + os.environ['PATH']
 
 
-@cli.command(help="Install a package.")
+@cli.command(help="Install a package.", aliases=['add'])
 @click.argument("packages", nargs=-1)
 @click.option(
     "--optional",
@@ -97,7 +98,7 @@ def install(
         extra_index_url: Optional[str],
 ) -> None:
     """Add a package to the project."""
-    click.echo(f"Adding {packages}")
+    click.echo(f"Adding {','.join(packages)}")
     project_file: Path = ctx.obj["PROJECT_FILE"]
     add_packages(
         project_file,
@@ -111,7 +112,7 @@ def install(
     )
 
 
-@cli.command(help="Uninstall a package.")
+@cli.command(help="Uninstall a package.", aliases=['remove'])
 @click.option(
     "--optional",
     'group',
@@ -127,7 +128,7 @@ def uninstall(
         packages: Sequence[str]
 ) -> None:
     """Remove a package from the project."""
-    click.echo(f"Removing {packages}")
+    click.echo(f"Removing {','.join(packages)}")
     project_file: Path = ctx.obj["PROJECT_FILE"]
     remove_packages(
         project_file,
@@ -580,10 +581,22 @@ def publish(
     help="Author"
 )
 @click.option(
-    '--create',
-    type=click.Choice(['local-venv']),
-    default=None,
-    help="Create the project."
+    "--venv-name",
+    type=str,
+    default=".venv",
+    help="Name of the folder for the virtual environment"
+)
+@click.option(
+    "--no-venv",
+    is_flag=True,
+    default=False,
+    help="Do not create a virtual environment."
+)
+@click.option(
+    "--no-tests",
+    is_flag=True,
+    default=False,
+    help="Do not create a tests folder."
 )
 @click.pass_context
 def init(
@@ -593,7 +606,9 @@ def init(
         description: Optional[str],
         author: Optional[str],
         email: Optional[str],
-        create: Optional[Literal['local-venv']]
+        venv_name: str,
+        no_venv: bool,
+        no_tests: bool,
 ) -> None:
     """Remove a package from the project."""
     click.echo(f"Initializing {name}")
@@ -605,7 +620,9 @@ def init(
         description,
         author,
         email,
-        create,
+        venv_name,
+        no_venv,
+        no_tests
     )
 
 

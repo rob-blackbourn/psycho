@@ -46,6 +46,15 @@ def _create_src(name: str) -> None:
         init_file.touch()
 
 
+def _create_tests() -> None:
+    # Create a tests directory
+    tests_dir = Path('tests')
+    tests_dir.mkdir(parents=True, exist_ok=True)
+    init_file = tests_dir / '__init__.py'
+    if not init_file.exists():
+        init_file.touch()
+
+
 def _create_gitignore() -> None:
     gitignore = Path('.gitignore')
     if not gitignore.exists():
@@ -68,9 +77,9 @@ def _initialize_git() -> None:
     subprocess.run(['git', 'branch', '-M', 'main'], check=True)
 
 
-def _create_venv() -> Path:
+def _create_venv(venv_name: str) -> Path:
     # Create a virtual environment
-    venv = Path('.') / '.venv'
+    venv = Path('.') / venv_name
     if not venv.exists():
         subprocess.run(['python', '-m', 'venv', str(venv)], check=True)
     venv_bin = make_venv_bin(venv)
@@ -115,7 +124,9 @@ def initialize(
         description: Optional[str],
         author: Optional[str],
         email: Optional[str],
-        create: Optional[Literal['local', 'local-venv']],
+        venv_name: str,
+        no_venv: bool,
+        no_tests: bool,
 ) -> None:
     if project_file.exists():
         raise FileExistsError(f"File {project_file} already exists.")
@@ -145,18 +156,20 @@ def initialize(
     build_system.add("build-backend", "setuptools.build_meta")
     pyproject.add("build-system", build_system)
 
-    if not create:
+    if no_venv:
         venv_python: Path | None = None
     else:
         _create_src(name)
+        if not no_tests:
+            _create_tests()
         _create_gitignore()
         _initialize_git()
-        venv_python = _create_venv()
+        venv_python = _create_venv(venv_name)
         readme = _create_readme(name, description)
         project.add("readme", str(readme))
 
     write_pyproject(project_file, pyproject)
 
-    if create and venv_python is not None:
+    if venv_python is not None:
         # install the project in editable mode
         _install_project(venv_python)
