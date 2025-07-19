@@ -66,9 +66,14 @@ $ psycho init \
     --email "rob@example.com"
 ```
 
-This creates the standard
-project structure, with a local virtual environment. It will also upgrade pip and
-install the project in the virtual environment.
+This creates the standard project structure, with a local virtual environment.
+It will also upgrade pip and install the project in the virtual environment.
+
+The following flags are also supported:
+
+* `--no-venv` to not create a virtual environment.
+* `--no-tests` to not create the tests folder.
+* `--venv <venv-name>` to give the venv folder a specific name (the defailt is ".venv").
 
 ### install
 

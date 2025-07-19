@@ -156,12 +156,13 @@ def initialize(
     build_system.add("build-backend", "setuptools.build_meta")
     pyproject.add("build-system", build_system)
 
+    _create_src(name)
+    if not no_tests:
+        _create_tests()
+
     if no_venv:
         venv_python: Path | None = None
     else:
-        _create_src(name)
-        if not no_tests:
-            _create_tests()
         _create_gitignore()
         _initialize_git()
         venv_python = _create_venv(venv_name)
