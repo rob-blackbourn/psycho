@@ -2,7 +2,7 @@
 
 from pathlib import Path
 import subprocess
-import sys
+import re
 from typing import cast, Dict, List, Literal, Optional, Sequence
 
 from packaging.requirements import Requirement
@@ -14,52 +14,64 @@ from .projects import read_pyproject, write_pyproject, ensure_project
 
 def _pip(
         command: Literal['install', 'uninstall'],
-        requirement: Requirement,
+        dependency: Requirement | Path,
         *args: str
 ) -> None:
     subprocess.check_call([
-        'python', "-m", "pip", command, *args, str(requirement)
+        'python', "-m", "pip", command, *args, str(dependency)
     ])
 
 
-def _pip_install_project(args: List[str]) -> None:
+def _pip_install_editable(name: str, args: List[str]) -> None:
     subprocess.check_call([
-        'python', "-m", "pip", 'install', '--editable', '.', *args
+        'python', "-m", "pip", 'install', '--editable', name, *args
     ])
 
 
-def _read_required_dependency_requirements(
+def _parse_dependency(value: str) -> Requirement | Path:
+    """Convert a string to a Requirement or Path."""
+    if value.startswith(".") or value.startswith('/'):
+        return Path()
+    elif value.startswith('file://'):
+        return Path(value[7:])
+    try:
+        return Requirement(value)
+    except ValueError:
+        return Path(value)
+
+
+def _read_required_dependencies(
         project: Table
-) -> Dict[str, Requirement]:
+) -> Dict[str, Requirement | Path]:
     if 'dependencies' not in project:
         project['dependencies'] = array()
-    dependencies = project["dependencies"]
-    if not isinstance(dependencies, Array):
+    unparsed_dependencies = project["dependencies"]
+    if not isinstance(unparsed_dependencies, Array):
         raise TypeError("dependencies must be an Array")
-    requirements = [
-        Requirement(str(dep))
-        for dep in dependencies
+    parsed_dependencies = [
+        _parse_dependency(str(item))
+        for item in unparsed_dependencies
     ]
     return {
-        req.name: req
-        for req in requirements
+        dependency.name: dependency
+        for dependency in parsed_dependencies
     }
 
 
-def _recreate_required_dependency_requirements(
+def _recreate_required_dependencies(
         project: Table,
-        requirements: Dict[str, Requirement]
+        dependencies: Dict[str, Requirement | Path]
 ) -> None:
-    dependencies = array()
-    for req in requirements.values():
-        dependencies.append(str(req))
-    project['dependencies'] = dependencies.multiline(True)
+    dependency_array = array()
+    for dependency in dependencies.values():
+        dependency_array.append(str(dependency))
+    project['dependencies'] = dependency_array.multiline(True)
 
 
-def _read_optional_dependency_requirements(
+def _read_optional_dependencies(
         project: Table,
         group: str
-) -> Dict[str, Requirement]:
+) -> Dict[str, Requirement | Path]:
     if 'optional-dependencies' not in project:
         project['optional-dependencies'] = table()
     optional_dependencies = project["optional-dependencies"]
@@ -67,30 +79,30 @@ def _read_optional_dependency_requirements(
         raise TypeError("dependencies must be a Table")
     if group not in optional_dependencies:
         optional_dependencies[group] = array()
-    dependencies = optional_dependencies[group]
-    if not isinstance(dependencies, Array):
+    unparsed_dependencies = optional_dependencies[group]
+    if not isinstance(unparsed_dependencies, Array):
         raise TypeError("dependencies must be an Array")
-    requirements = [
-        Requirement(str(dep))
-        for dep in dependencies
+    parsed_dependencies = [
+        _parse_dependency(str(item))
+        for item in unparsed_dependencies
     ]
     return {
-        req.name: req
-        for req in requirements
+        dependency.name: dependency
+        for dependency in parsed_dependencies
     }
 
 
-def _recreate_optional_dependency_requirements(
+def _recreate_optional_dependencies(
         project: Table,
         group: str,
-        requirements: Dict[str, Requirement]
+        dependencies: Dict[str, Requirement | Path]
 ) -> None:
-    dependencies = array()
-    for req in requirements.values():
-        dependencies.append(str(req))
+    dependency_array = array()
+    for dependency in dependencies.values():
+        dependency_array.append(str(dependency))
     optional_dependencies = cast(Table, project['optional-dependencies'])
-    if len(dependencies) > 0:
-        optional_dependencies[group] = dependencies.multiline(True)
+    if len(dependency_array) > 0:
+        optional_dependencies[group] = dependency_array.multiline(True)
     else:
         del optional_dependencies[group]
         if len(optional_dependencies) == 0:
@@ -124,38 +136,48 @@ def add_packages(
 
     # Special case for no packages - install the project as editable.
     if len(packages) == 0:
-        _pip_install_project(args)
+        _pip_install_editable(".", args)
         return
+
+    if editable:
+        if len(packages) > 1:
+            raise ValueError(
+                "Cannot install multiple packages in editable mode"
+            )
+        pkg = packages[0].strip()
+        if re.match(r"\.\s*(\[[^\]]*\])?$", pkg):
+            _pip_install_editable(pkg, args)
+            return
 
     pyproject = read_pyproject(project_path)
     project = ensure_project(pyproject)
-    current_requirements = _read_required_dependency_requirements(
+    current_dependencies = _read_required_dependencies(
         project
-    ) if not group else _read_optional_dependency_requirements(
+    ) if not group else _read_optional_dependencies(
         project,
         group
     )
 
-    requirements = [Requirement(pkg) for pkg in packages]
+    requested_dependencies = [_parse_dependency(pkg) for pkg in packages]
 
-    for req in requirements:
-        if req.name in current_requirements:
-            _pip('uninstall', req, '-y')
+    for dependency in requested_dependencies:
+        if dependency.name in current_dependencies:
+            _pip('uninstall', dependency, '-y')
 
-        _pip('install', req, *args)
+        _pip('install', dependency, *args)
 
-        current_requirements[req.name] = req
+        current_dependencies[dependency.name] = dependency
 
     if group is None:
-        _recreate_required_dependency_requirements(
+        _recreate_required_dependencies(
             project,
-            current_requirements
+            current_dependencies
         )
     else:
-        _recreate_optional_dependency_requirements(
+        _recreate_optional_dependencies(
             project,
             group,
-            current_requirements
+            current_dependencies
         )
 
     write_pyproject(project_path, pyproject)
@@ -168,30 +190,29 @@ def remove_packages(
 ) -> None:
     pyproject = read_pyproject(project_path)
     project = ensure_project(pyproject)
-    current_requirements = _read_required_dependency_requirements(
+    current_dependencies = _read_required_dependencies(
         project
-    ) if not group else _read_optional_dependency_requirements(
+    ) if not group else _read_optional_dependencies(
         project,
         group
     )
 
-    requirements = [Requirement(pkg) for pkg in packages]
+    unwanted_dependencies = [_parse_dependency(pkg) for pkg in packages]
 
-    for req in requirements:
-        if req.name not in current_requirements:
-            raise KeyError(f"Dependency {req} does not exist")
+    for dependency in unwanted_dependencies:
+        if dependency.name not in current_dependencies:
+            raise KeyError(f"Dependency {dependency} does not exist")
 
-        _pip('uninstall', req, '-y')
-        del current_requirements[req.name]
+        _pip('uninstall', dependency, '-y')
+        del current_dependencies[dependency.name]
 
     if group is None:
-        _recreate_required_dependency_requirements(
-            project, current_requirements)
+        _recreate_required_dependencies(project, current_dependencies)
     else:
-        _recreate_optional_dependency_requirements(
+        _recreate_optional_dependencies(
             project,
             group,
-            current_requirements
+            current_dependencies
         )
 
     write_pyproject(project_path, pyproject)
