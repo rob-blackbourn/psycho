@@ -106,6 +106,7 @@ def add_packages(
         upgrade: Optional[bool],
         index_url: Optional[str],
         extra_index_url: Optional[str],
+        editable: Optional[bool],
 ) -> None:
     args: List[str] = []
     if allow_prerelease:
@@ -118,6 +119,8 @@ def add_packages(
         args += ['--index-url', index_url]
     if extra_index_url:
         args += ['--extra-index-url', extra_index_url]
+    if editable:
+        args += ['--editable']
 
     # Special case for no packages - install the project as editable.
     if len(packages) == 0:

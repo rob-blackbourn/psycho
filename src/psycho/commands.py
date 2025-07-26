@@ -47,6 +47,7 @@ def cli(ctx: Context, project_file: str) -> None:
 @cli.command(help="Install a package.", aliases=['add'])
 @click.argument("packages", nargs=-1)
 @click.option(
+    "-o",
     "--optional",
     'group',
     default=None,
@@ -86,6 +87,13 @@ def cli(ctx: Context, project_file: str) -> None:
     type=str,
     help="Extra URLs of package indexes to use in addition to --index-url. Should follow the same rules as --index-url.",
 )
+@click.option(
+    '-e',
+    '--editable',
+    is_flag=True,
+    default=None,
+    help='Install a project in editable mode (i.e. setuptools "develop mode") from a local project path or a VCS url.',
+)
 @click.pass_context
 def install(
         ctx: Context,
@@ -96,6 +104,7 @@ def install(
         upgrade: Optional[bool],
         index_url: Optional[str],
         extra_index_url: Optional[str],
+        editable: Optional[bool],
 ) -> None:
     """Add a package to the project."""
     click.echo(f"Adding {','.join(packages)}")
