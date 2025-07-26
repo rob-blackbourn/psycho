@@ -31,7 +31,7 @@ def _pip_install_editable(name: str, args: List[str]) -> None:
 def _parse_dependency(value: str) -> Union[Requirement, Path]:
     """Convert a string to a Requirement or Path."""
     if value.startswith(".") or value.startswith('/'):
-        return Path()
+        return Path(value)
     elif value.startswith('file://'):
         return Path(value[7:])
     try:
