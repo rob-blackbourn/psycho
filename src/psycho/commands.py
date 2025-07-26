@@ -118,6 +118,7 @@ def install(
         upgrade,
         index_url,
         extra_index_url,
+        editable,
     )
 
 
