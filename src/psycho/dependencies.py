@@ -3,7 +3,7 @@
 from pathlib import Path
 import subprocess
 import re
-from typing import cast, Dict, List, Literal, Optional, Sequence
+from typing import cast, Dict, List, Literal, Optional, Sequence, Union
 
 from packaging.requirements import Requirement
 from tomlkit import table, array
@@ -14,7 +14,7 @@ from .projects import read_pyproject, write_pyproject, ensure_project
 
 def _pip(
         command: Literal['install', 'uninstall'],
-        dependency: Requirement | Path,
+        dependency: Union[Requirement, Path],
         *args: str
 ) -> None:
     subprocess.check_call([
@@ -28,7 +28,7 @@ def _pip_install_editable(name: str, args: List[str]) -> None:
     ])
 
 
-def _parse_dependency(value: str) -> Requirement | Path:
+def _parse_dependency(value: str) -> Union[Requirement, Path]:
     """Convert a string to a Requirement or Path."""
     if value.startswith(".") or value.startswith('/'):
         return Path()
@@ -42,7 +42,7 @@ def _parse_dependency(value: str) -> Requirement | Path:
 
 def _read_required_dependencies(
         project: Table
-) -> Dict[str, Requirement | Path]:
+) -> Dict[str, Union[Requirement, Path]]:
     if 'dependencies' not in project:
         project['dependencies'] = array()
     unparsed_dependencies = project["dependencies"]
@@ -60,7 +60,7 @@ def _read_required_dependencies(
 
 def _recreate_required_dependencies(
         project: Table,
-        dependencies: Dict[str, Requirement | Path]
+        dependencies: Dict[str, Union[Requirement, Path]]
 ) -> None:
     dependency_array = array()
     for dependency in dependencies.values():
@@ -71,7 +71,7 @@ def _recreate_required_dependencies(
 def _read_optional_dependencies(
         project: Table,
         group: str
-) -> Dict[str, Requirement | Path]:
+) -> Dict[str, Union[Requirement, Path]]:
     if 'optional-dependencies' not in project:
         project['optional-dependencies'] = table()
     optional_dependencies = project["optional-dependencies"]
@@ -95,7 +95,7 @@ def _read_optional_dependencies(
 def _recreate_optional_dependencies(
         project: Table,
         group: str,
-        dependencies: Dict[str, Requirement | Path]
+        dependencies: Dict[str, Union[Requirement, Path]]
 ) -> None:
     dependency_array = array()
     for dependency in dependencies.values():
