@@ -1,11 +1,11 @@
 import getpass
+import importlib.resources
 from pathlib import Path
 import shutil
 import socket
 import subprocess
 from typing import Optional
 
-import pkg_resources
 from tomlkit import document, table, array, inline_table
 
 from .paths import make_venv_bin
@@ -59,13 +59,11 @@ def _create_gitignore() -> None:
     gitignore = Path('.gitignore')
     if not gitignore.exists():
         # Add a .gitignore file
-        infile = pkg_resources.resource_filename(
-            'psycho',
-            'data/gitignore.txt'
+        text = importlib.resources.read_text(
+            'psycho.data',
+            'gitignore.txt'
         )
-        with gitignore.open('wt', encoding='utf-8') as fout:
-            with open(infile, 'rt', encoding='utf-8') as fin:
-                fout.write(fin.read())
+        gitignore.write_text(text, encoding='utf-8')
 
 
 def _initialize_git() -> None:
@@ -81,36 +79,35 @@ def _create_venv(venv_name: str, upgrade_deps: bool) -> Path:
     # Create a virtual environment
     venv = Path('.') / venv_name
     if not venv.exists():
-        extra_args = ["--upgrade-deps"] if upgrade_deps else []
+        minor_version = int(subprocess.getoutput(
+            "python -c 'import platform; print(platform.python_version_tuple()[1])'"
+        ))
+        extra_args = (
+            ["--upgrade-deps"]
+            if upgrade_deps and minor_version >= 9 else
+            []
+        )
         subprocess.run(
             ['python', '-m', 'venv', str(venv), *extra_args],
-            check=True
+            check=True,
+            capture_output=True
         )
     venv_bin = make_venv_bin(venv)
     venv_python = venv_bin / 'python'
-    # # Upgrade pip
-    # subprocess.run(
-    #     [str(venv_python), '-m', 'pip', 'install', '--upgrade', 'pip'],
-    #     check=True
-    # )
     return venv_python
 
 
 def _create_readme(name: str, description: str) -> Path:
     readme = Path('README.md')
     if not readme.exists():
-        infile = pkg_resources.resource_filename(
-            'psycho',
-            'data/README.md'
+        text = importlib.resources.read_text(
+            'psycho.data',
+            'README.md'
         )
-        with readme.open('wt', encoding='utf-8') as fout:
-            with open(infile, 'rt', encoding='utf-8') as fin:
-                fout.write(
-                    fin.read().format(
-                        name=name,
-                        description=description
-                    )
-                )
+        readme.write_text(
+            text.format(name=name, description=description),
+            encoding='utf-8'
+        )
     return readme
 
 
