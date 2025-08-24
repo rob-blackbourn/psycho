@@ -2,8 +2,7 @@
 
 import os
 from pathlib import Path
-import platform
-from typing import Literal, Optional, Sequence, Tuple
+from typing import Optional, Sequence, Tuple
 
 import click
 from click import Context
