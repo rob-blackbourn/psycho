@@ -16,7 +16,8 @@ from psycho.initializing import (
     initialize,
     init_get_name,
     init_get_author,
-    init_get_email
+    init_get_email,
+    synchronize
 )
 from psycho.paths import make_venv_bin
 from psycho.publishing import publish_project
@@ -549,6 +550,35 @@ def publish(
         verbose,
         disable_progress_bar,
     )
+
+
+@cli.command(help="Sync a package.")
+@click.option(
+    "--venv-name",
+    type=str,
+    default=".venv",
+    help="Name of the folder for the virtual environment"
+)
+@click.option(
+    "--no-upgrade",
+    is_flag=True,
+    default=False,
+    help="Do not upgrade the venv dependencies."
+)
+@click.option(
+    "--no-venv",
+    is_flag=True,
+    default=False,
+    help="Do not create a virtual environment."
+)
+def sync(
+        venv_name: str,
+        no_upgrade: bool,
+        no_venv: bool,
+) -> None:
+    """Synchronize the project."""
+    click.echo("Synchronizing")
+    synchronize(venv_name, no_upgrade, no_venv)
 
 
 @cli.command(help="Initialise a package.")

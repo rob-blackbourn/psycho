@@ -122,7 +122,7 @@ def initialize(
         project_file: Path,
         name: str,
         version: str,
-        description: Optional[str],
+        description: str,
         author: Optional[str],
         email: Optional[str],
         venv_name: str,
@@ -172,6 +172,21 @@ def initialize(
         project.add("readme", str(readme))
 
     write_pyproject(project_file, pyproject)
+
+    if venv_python is not None:
+        # install the project in editable mode
+        _install_project(venv_python)
+
+
+def synchronize(
+        venv_name: str,
+        no_upgrade: bool,
+        no_venv: bool,
+) -> None:
+    if no_venv:
+        venv_python: Path | None = None
+    else:
+        venv_python = _create_venv(venv_name, not no_upgrade)
 
     if venv_python is not None:
         # install the project in editable mode

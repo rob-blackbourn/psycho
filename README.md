@@ -35,6 +35,7 @@ in support for automating project management with just the standard tools:
 The following are supported.
 
 * init
+* sync
 * install
 * uninstall
 * build
@@ -79,6 +80,19 @@ The following flags are also supported:
 
 * `--no-venv` to not create a virtual environment.
 * `--no-tests` to not create the tests folder.
+* `--no-upgrade` to prevent the venv dependencies being upgraded (pip).
+* `--venv <venv-name>` to give the venv folder a specific name (the default is ".venv").
+
+### sync
+
+Install the project.
+
+```bash
+psycho sync
+```
+The following flags are also supported:
+
+* `--no-venv` to not create a virtual environment.
 * `--no-upgrade` to prevent the venv dependencies being upgraded (pip).
 * `--venv <venv-name>` to give the venv folder a specific name (the default is ".venv").
 
