@@ -346,7 +346,7 @@ def upload(
         verbose: Optional[bool],
         disable_progress_bar: Optional[bool],
 ) -> None:
-    """Build the project."""
+    """Upload the project."""
     upload_project(
         repository,
         repository_url,
@@ -521,7 +521,7 @@ def publish(
         verbose: Optional[bool],
         disable_progress_bar: Optional[bool],
 ) -> None:
-    """Build the project."""
+    """Build then upload the project."""
     click.echo("Publishing")
     config_vars = {
         name: value
@@ -659,7 +659,7 @@ def init(
         no_tests: bool,
         yes: bool,
 ) -> None:
-    """Remove a package from the project."""
+    """Create a new project."""
 
     if not yes:
         name = click.prompt("Name", default=name, type=str)
@@ -687,7 +687,7 @@ def init(
 
 @cli.command(help="Show the environment variables.")
 def env() -> None:
-    """Remove a package from the project."""
+    """Show the environment variables."""
     dct = environment()
     for name, value in dct.items():
         click.echo(f"{name}='{value}'")
@@ -696,7 +696,7 @@ def env() -> None:
 @cli.command(help="Show the path to an executable.")
 @click.argument("exe", required=True)
 def which(exe: str) -> None:
-    """Remove a package from the project."""
+    """Find where an executable is installed."""
     path = location(exe)
     if path is None:
         click.echo(f"{exe} not found")
