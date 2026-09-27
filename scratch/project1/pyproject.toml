@@ -1,0 +1,21 @@
+[project]
+name = "project1"
+version = "0.1.0"
+description = "A sample project."
+authors = [
+    { name = "Rob Blackbourn", email = "rob.blackbourn@gmail.com" }
+]
+requires-python = ">=3.8"
+readme = "README.md"
+dependencies = [
+    "bareUtils"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest"
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
